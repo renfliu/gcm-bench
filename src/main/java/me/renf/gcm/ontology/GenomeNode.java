@@ -1,6 +1,9 @@
 package me.renf.gcm.ontology;
 
 import me.renf.gcm.GenConfig;
+import me.renf.gcm.exceptions.WriterException;
+import me.renf.gcm.output.DataWriter;
+import me.renf.gcm.output.DataWriterFactory;
 import me.renf.gcm.random.IDGenerator;
 import me.renf.gcm.random.NameGenerator;
 import me.renf.gcm.random.RandomGenerator;
@@ -8,6 +11,7 @@ import me.renf.gcm.random.TaxonIDGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -46,6 +50,28 @@ public class GenomeNode implements RandomGenerator {
         return sb.toString();
     }
 
+    public void writeNext() {
+        try {
+            DataWriter writer = DataWriterFactory.getWriter(config);
+            String id = getID();
+            //writer.write(getGeneAxiom(id));
+            writeGeneAxiom(id, writer);
+            writer.write(getTaxonAxiom(id));
+            writer.write(getAccessionAxiom(id));
+            writer.write(getDefinitionAxiom(id));
+            writer.write(getGiNumberAxiom(id));
+            writer.write(getTypeAxiom(id));
+            writer.write(getDateSubmitAxiom(id));
+            writer.write(getStrainAxiom(id));
+            writer.write(getSubmitAddressAxiom(id));
+            writer.write(getSubmitterAxiom(id));
+        } catch (WriterException e) {
+            logger.error(e.getMessage());
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+        }
+    }
+
     public String getID() {
         int r = rand.nextInt(ids.length);
         if (r < 8) {
@@ -67,6 +93,15 @@ public class GenomeNode implements RandomGenerator {
         }
     }
 
+
+    private void writeGeneAxiom(String id, DataWriter writer) throws IOException{
+        int r = rand.nextInt(4000) + 1;
+        int n = (int)(1701 - 10*(Math.log(r) / Math.log(1.05)));   //统计出的pathway出现概率的拟合曲线
+        for (int i = 0; i < n; i++) {
+            writer.write(String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/genome/%s> <http://gcm.wdcm.org/ontology/" +
+                    "gcmAnnotation/v1/x-gene> <http://gcm.wdcm.org/data/gcmAnnotation1/gene/%s> .\n", id, geneIDGenerator.next()));
+        }
+    }
 
     private String getGeneAxiom(String id) {
         int r = rand.nextInt(4000);

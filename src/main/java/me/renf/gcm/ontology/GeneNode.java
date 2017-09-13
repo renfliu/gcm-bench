@@ -64,7 +64,8 @@ public class GeneNode implements NodeGenerator {
                 writer.write(getLocusTagAxiom(id));
                 writer.write(getOrientationAxiom(id));
                 if (rand.nextInt(100) > 98) {
-                    writer.write(genomeGenerator.next());
+                    //writer.write(genomeGenerator.next());
+                    genomeGenerator.writeNext();
                 }
             }
         } catch (WriterException e) {
