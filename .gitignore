@@ -47,9 +47,9 @@ buildNumber.properties
 ### Custom
 gcm-datagen/logs/
 logs/
-res/
-report/
-conf/
+/res/
+/report/
+/conf/
 将删除 gcm-bench/
 将删除 gcm-datagen/
 将删除 gcmbench.iml
