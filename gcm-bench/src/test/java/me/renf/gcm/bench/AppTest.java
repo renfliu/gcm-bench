@@ -1,4 +1,4 @@
-package me.renf.gcm;
+package me.renf.gcm.bench;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

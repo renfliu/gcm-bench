@@ -27,23 +27,71 @@ public class GenConfig {
     }
 
     public long getEnzymeLines() {
+        if (enzymeLines == 0) {
+            enzymeLines = (long)(totalLines*enzymeRatio);
+        }
         return enzymeLines;
     }
 
     public long getPathwayLines() {
+        if (pathwayLines == 0) {
+            pathwayLines = (long)(totalLines*pathwayRatio);
+        }
         return pathwayLines;
     }
 
     public long getTaxonLines() {
+        if (taxonLines == 0) {
+            taxonLines = (long)(totalLines*taxonRatio);
+        }
         return taxonLines;
     }
 
     public long getProteinLines() {
+        if (proteinLines == 0) {
+            proteinLines = (long)(totalLines*proteinRatio);
+        }
         return proteinLines;
     }
 
     public long getGeneLines() {
+        if (geneLines == 0) {
+            geneLines = (long)(totalLines*geneRatio);
+        }
         return geneLines;
+    }
+
+    public void setOutFile(String outFile) {
+        this.outFile = outFile;
+    }
+
+    public void setTotalLines(long totalLines) {
+        this.totalLines = totalLines;
+    }
+
+    public void setEnzymeRatio(float enzymeRatio) {
+        this.enzymeRatio = enzymeRatio;
+        enzymeLines = (long)(totalLines*enzymeRatio);
+    }
+
+    public void setPathwayRatio(float pathwayRatio) {
+        this.pathwayRatio = pathwayRatio;
+        pathwayLines = (long)(totalLines*pathwayRatio);
+    }
+
+    public void setTaxonRatio(float taxonRatio) {
+        this.taxonRatio = taxonRatio;
+        taxonLines = (long)(totalLines*taxonRatio);
+    }
+
+    public void setProteinRatio(float proteinRatio) {
+        this.proteinRatio = proteinRatio;
+        proteinLines = (long)(totalLines*proteinRatio);
+    }
+
+    public void setGeneRatio(float geneRatio) {
+        this.geneRatio = geneRatio;
+        geneLines = (long)(totalLines*geneRatio);
     }
 
     public void set(String[] args) throws ArgumentException{
@@ -59,30 +107,24 @@ public class GenConfig {
                 }
             }
             else if (args[i].equals("--enzyme")) {
-                enzymeRatio = parseRatio(args[i+1], args[i]);
+                setEnzymeRatio(parseRatio(args[i+1], args[i]));
             }
             else if (args[i].equals("--pathway")) {
-                pathwayRatio = parseRatio(args[i+1], args[i]);
+                setPathwayRatio(parseRatio(args[i+1], args[i]));
             }
             else if (args[i].equals("--taxonomy")) {
-                taxonRatio = parseRatio(args[i+1], args[i]);
+                setTaxonRatio(parseRatio(args[i+1], args[i]));
             }
             else if (args[i].equals("--protein")) {
-                proteinRatio = parseRatio(args[i+1], args[i]);
+                setProteinRatio(parseRatio(args[i+1], args[i]));
             }
             else if (args[i].equals("--gene")) {
-                geneRatio = parseRatio(args[i+1], args[i]);
+                setGeneRatio(parseRatio(args[i+1], args[i]));
             }
             else {
                 throw new ArgumentException("the argument can't be recognized : " + args[i]);
             }
         }
-
-        enzymeLines = (long)(totalLines*enzymeRatio);
-        pathwayLines = (long)(totalLines*pathwayRatio);
-        taxonLines = (long)(totalLines*taxonRatio);
-        proteinLines = (long)(totalLines*proteinRatio);
-        geneLines = (long)(totalLines*geneRatio);
     }
 
     private float parseRatio(String ratio, String name) throws ArgumentException {

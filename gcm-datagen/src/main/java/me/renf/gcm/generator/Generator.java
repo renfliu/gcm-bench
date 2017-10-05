@@ -37,6 +37,10 @@ public class Generator {
         config = new GenConfig();
     }
 
+    public Generator(GenConfig conf) {
+        config = conf;
+    }
+
     public Generator(String[] args) throws ArgumentException{
         config = new GenConfig();
         if (args != null) config.set(args);
