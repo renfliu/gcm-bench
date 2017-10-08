@@ -41,13 +41,6 @@ public class GStorePlatform extends Platform{
         gc.load(dataset);
     }
 
-    @Override
-    public void loadJob() {
-        // the query is provided by platform in default.
-        for (QueryJob job : getQueryFromFile()) {
-            addQueryJob(job);
-        }
-    }
 
     @Override
     public String query(String query) {
@@ -66,36 +59,4 @@ public class GStorePlatform extends Platform{
         // do nothing
     }
 
-    private List<GstoreQuery> getQueryFromFile() {
-        List<GstoreQuery> querys = new ArrayList<>();
-
-        try {
-            InputStream queryInput;
-            if (conf.isGenerate()) {
-                queryInput = this.getClass().getClassLoader().getResourceAsStream("query/query.sql");
-            }else {
-                queryInput = new FileInputStream(new File(conf.getSparql()));
-            }
-            BufferedReader reader = new BufferedReader(new InputStreamReader(queryInput));
-            String line;
-            StringBuilder queryBuilder = new StringBuilder();
-            while((line = reader.readLine()) != null) {
-                if (line.startsWith("#")) {
-                    // step over this line
-                } else if (line.isEmpty()) {
-                    if (queryBuilder.length() > 0 ) {
-                        GstoreQuery query = new GstoreQuery(gc, queryBuilder.toString());
-                        querys.add(query);
-                    }
-                    queryBuilder.setLength(0);
-                } else {
-                    queryBuilder.append(line);
-                    queryBuilder.append("\n");
-                }
-            }
-        } catch (IOException e) {
-            throw new BenchmarkLoadException(e.getMessage());
-        }
-        return querys;
-    }
 }

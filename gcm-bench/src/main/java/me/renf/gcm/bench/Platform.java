@@ -1,7 +1,10 @@
 package me.renf.gcm.bench;
 
 import me.renf.gcm.bench.conf.BenchConf;
+import me.renf.gcm.bench.exception.BenchmarkLoadException;
+import me.renf.gcm.bench.gstore.query.GstoreQuery;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,7 +63,11 @@ abstract public class Platform {
     /**
      * 向测试平台添加任务
      */
-    abstract public void loadJob();
+    public void loadJob() {
+        for (QueryJob job : getQueryFromFile()) {
+            addQueryJob(job);
+        }
+    }
 
     /**
      * 实现每一个query的具体实现
@@ -76,4 +83,37 @@ abstract public class Platform {
      * 退出测试平台
      */
     abstract public void exit();
+
+    private List<QueryJob> getQueryFromFile() {
+        List<QueryJob> querys = new ArrayList<>();
+
+        try {
+            InputStream queryInput;
+            if (conf.isGenerate()) {
+                queryInput = this.getClass().getClassLoader().getResourceAsStream("query/query.sql");
+            }else {
+                queryInput = new FileInputStream(new File(conf.getSparql()));
+            }
+            BufferedReader reader = new BufferedReader(new InputStreamReader(queryInput));
+            String line;
+            StringBuilder queryBuilder = new StringBuilder();
+            while((line = reader.readLine()) != null) {
+                if (line.startsWith("#")) {
+                    // step over this line
+                } else if (line.isEmpty()) {
+                    if (queryBuilder.length() > 0 ) {
+                        QueryJob query = new QueryJob(queryBuilder.toString());
+                        querys.add(query);
+                    }
+                    queryBuilder.setLength(0);
+                } else {
+                    queryBuilder.append(line);
+                    queryBuilder.append("\n");
+                }
+            }
+        } catch (IOException e) {
+            throw new BenchmarkLoadException(e.getMessage());
+        }
+        return querys;
+    }
 }

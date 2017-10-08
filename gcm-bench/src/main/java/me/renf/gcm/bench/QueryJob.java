@@ -1,6 +1,6 @@
 package me.renf.gcm.bench;
 
-abstract public class QueryJob {
+public class QueryJob {
     protected String query;
     protected String result;
 
@@ -24,6 +24,6 @@ abstract public class QueryJob {
         this.result = result;
     }
 
-    abstract public void execute();
+    public void execute() {}
 
 }

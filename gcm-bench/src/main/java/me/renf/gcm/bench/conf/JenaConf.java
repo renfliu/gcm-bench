@@ -12,6 +12,7 @@ import java.util.Properties;
 public class JenaConf {
     private final String CONF_FILE = "conf/conf.properties";
     private final Logger logger = LoggerFactory.getLogger(GstoreConf.class);
+    private String destination;
 
     public void loadFromFile() throws IOException {
         Properties properties = new Properties();
@@ -20,6 +21,17 @@ public class JenaConf {
         InputStream inputStream = new FileInputStream(new File(CONF_FILE));
         properties.load(inputStream);
 
+        // TODO: destination
+        setDestination(properties.getProperty("jena_destination", ""));
+
         inputStream.close();
+    }
+
+    public String getDestination() {
+        return destination;
+    }
+
+    public void setDestination(String destination) {
+        this.destination = destination;
     }
 }
