@@ -14,7 +14,6 @@ WHERE {
     OPTIONAL { ?e anno:x-pathway ?pathway. }
     OPTIONAL { ?e anno:keggGene ?gene. }
     OPTIONAL { ?e anno:product ?product. }
-    OPTIONAL { ?e anno:name. }
 }
 
 

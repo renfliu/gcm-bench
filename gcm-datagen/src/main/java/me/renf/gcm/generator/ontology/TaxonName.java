@@ -36,7 +36,7 @@ public class TaxonName implements RandomGenerator{
 
     private String getTaxIDAxiom(String id) {
         String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/name/%s> <http://gcm.wdcm.org/" +
-                "ontology/gcmAnnotation/v1/taxid> http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/%s .", id, idGenerator.next());
+                "ontology/gcmAnnotation/v1/taxid> <http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/%s> .", id, idGenerator.next());
         return axiom+"\n";
     }
 

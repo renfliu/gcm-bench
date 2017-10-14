@@ -4,10 +4,7 @@ import me.renf.gcm.generator.GenConfig;
 import me.renf.gcm.generator.exceptions.WriterException;
 import me.renf.gcm.generator.output.DataWriter;
 import me.renf.gcm.generator.output.DataWriterFactory;
-import me.renf.gcm.generator.random.EnzymeIDGenertor;
-import me.renf.gcm.generator.random.KeggGeneGenerator;
-import me.renf.gcm.generator.random.NameGenerator;
-import me.renf.gcm.generator.random.RandomGenerator;
+import me.renf.gcm.generator.random.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,7 +25,7 @@ public class EnzymeNode extends OntologyNode implements NodeGenerator{
     public EnzymeNode(GenConfig config) {
         super(config);
         nodes = config.getEnzymeLines() / AVG_NODE_LINE;
-        pathwayGenerator = new NameGenerator();
+        pathwayGenerator = new PathwayIDGenerator(nodes);
         classGenerator = new NameGenerator();
         geneGenerator = new KeggGeneGenerator();
         nameGenerator = new NameGenerator();
