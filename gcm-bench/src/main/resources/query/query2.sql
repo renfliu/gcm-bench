@@ -56,20 +56,21 @@ WHERE {
 
 # Query 3
 # 带UNION的SPARQL查询
-# 获取Taxonomy的信息
+# 获取Taxonomy的信息、
+# 通过测试，但是id的数字需要统一下
 PREFIX anno:<http://gcm.wdcm.org/ontology/gcmAnnotation/v1/>
 PREFIX taxon:<http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/>
 PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 SELECT DISTINCT *
 WHERE {
     {
-        ?taxonId anno:ancestorTaxid taxon:1270;
+        ?taxonId anno:ancestorTaxid taxon:399171;
                  anno:nodeRank ?rank.
         ?nameId anno:taxid ?taxonid;
                 anno:nameclass 'scientificName';
                 anno:taxname ?name.
     } UNION {
-        ?nameId anno:taxid taxon:1270;
+        ?nameId anno:taxid taxon:399171;
                 anno:nameclass 'scientificName';
                 anno:taxname ?name.
     }
@@ -85,13 +86,26 @@ PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 SELECT DISTINCT *
 WHERE {
     ?geneId rdf:type anno:GeneNode;
-            anno:x-enzyme enzyme:%enzymeID%;
-            anno:geneProduct ?product.
-    FILTER regex(str(?product), "Cellulose", 'i').
-    enzyme:%enzymeID% rdf:type anno:EnzymeNode;
-                      anno:product ?enzymeProduct.
-    FILTER regex(str(?enzymeProduct), "diphosphate", 'i').
+            anno:x-taxon ?taxon.
+    ?taxon rdf:type anno:TaxonNode;
+                      anno:nodeRank ?rank.
+    FILTER regex(str(?rank), "order", 'i').
 }
+# gene 没有与enzyme相连，没有product，废弃
+#PREFIX anno:<http://gcm.wdcm.org/ontology/gcmAnnotation/v1/>
+#PREFIX gene:<http://gcm.wdcm.org/ontology/gcmAnnotation/v1/gene/>
+#PREFIX enzyme:<http://gcm.wdcm.org/data/gcmAnnotation1/enzyme/>
+#PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+#SELECT DISTINCT *
+#WHERE {
+#    ?geneId rdf:type anno:GeneNode;
+#            anno:x-enzyme enzyme:%enzymeID%;
+#            anno:geneProduct ?product.
+#    FILTER regex(str(?product), "Cellulose", 'i').
+#    enzyme:%enzymeID% rdf:type anno:EnzymeNode;
+#                      anno:product ?enzymeProduct.
+#    FILTER regex(str(?enzymeProduct), "diphosphate", 'i').
+#}
 
 # Query 5
 # 测试SPARQL的排序性能

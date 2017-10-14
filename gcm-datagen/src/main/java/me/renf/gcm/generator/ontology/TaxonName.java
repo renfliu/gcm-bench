@@ -34,7 +34,10 @@ public class TaxonName implements RandomGenerator{
     }
 
     private String getID() {
-        return String.format("%s:scientificName:%s", idGenerator.next(), getMD5(nameGenerator.next()));
+        int r = rand.nextInt(100);
+        String[] nameClasses = {"scientificName", "genbankCommonName", "equivalentName", "synonymName", "misnomerName", "includesName",
+                "authorityName", "typeMaterialName", "blastName", "commonName", "misspellingName", "genbankSynonym" };
+        return String.format("%s:%s:%s", idGenerator.next(), nameClasses[r%nameClasses.length], getMD5(nameGenerator.next()));
     }
 
     private String getTaxIDAxiom(String id) {
@@ -44,11 +47,8 @@ public class TaxonName implements RandomGenerator{
     }
 
     private String getNameClassAxiom(String id) {
-        int r = rand.nextInt(100);
-        String[] nameClasses = {"scientificName", "genbankCommonName", "equivalentName", "synonymName", "misnomerName", "includesName",
-                "authorityName", "typeMaterialName", "blastName", "commonName", "misspellingName", "genbankSynonym" };
         String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/name/%s> <http://gcm.wdcm.org/" +
-                "ontology/gcmAnnotation/v1/nameclass> \"%s\" .", id, nameClasses[r%nameClasses.length]);
+                "ontology/gcmAnnotation/v1/nameclass> \"%s\" .", id, getNameClass(id));
         return axiom+"\n";
     }
 
@@ -73,5 +73,10 @@ public class TaxonName implements RandomGenerator{
             logger.error("生成Taxon Name的md5出错" + e.getMessage());
         }
         return "";
+    }
+
+    private String getNameClass(String id) {
+        String[] ids = id.split(":");
+        return ids[1];
     }
 }
