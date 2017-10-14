@@ -99,8 +99,9 @@ public class Generator {
             // 写入owl数据
             FileReader reader = new FileReader(new File("res/gcm.n3"));
             char[] buffer = new char[2048];
-            while (reader.read(buffer) > 0) {
-                writer.write(buffer);
+            int len = -1;
+            while ((len = reader.read(buffer)) != -1) {
+                writer.write(buffer, 0, len);
             }
             reader.close();
 

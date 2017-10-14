@@ -140,9 +140,16 @@ public class GeneNode implements NodeGenerator {
     }
 
     private String getGeneTypeAxiom(String id) {
-        String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/gene/%s> <http://gcm.wdcm.org/ontology/" +
-                "gcmAnnotation/v1/geneType> \"%s\" .", id, nameGenerator.next());
-        return axiom + "\n";
+        String[] types = {"rRNA", "scRNA", "snRNA", "snoRNA", "protein-coding", "pseudo", "ncRNA", "other", "tRNA", "miscRNA", "unknown"};
+        int r = rand.nextInt(100);
+        if (r > 65) {
+            return "";
+        }else {
+            String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/gene/%s> <http://gcm.wdcm.org/ontology/" +
+                    "gcmAnnotation/v1/geneType> \"%s\" .", id, types[r%types.length]);
+            return axiom + "\n";
+        }
+
     }
 
     private String getMapLocationAxiom(String id) {

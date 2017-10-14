@@ -23,6 +23,10 @@ public class DataWriter {
         writer.write(chars);
     }
 
+    public void write(char[] chars, int off, int len) throws IOException {
+        writer.write(chars, off, len);
+    }
+
     public void write(String s) throws IOException {
         writer.write(s);
     }

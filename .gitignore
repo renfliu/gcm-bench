@@ -50,6 +50,7 @@ logs/
 /res/
 /report/
 /conf/
+/html/
 将删除 gcm-bench/
 将删除 gcm-datagen/
 将删除 gcmbench.iml
