@@ -8,15 +8,18 @@ import org.slf4j.LoggerFactory;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
+import java.util.Random;
 
 public class TaxonName implements RandomGenerator{
     final Logger logger = LoggerFactory.getLogger(RandomGenerator.class);
     private RandomGenerator nameGenerator;
     private RandomGenerator idGenerator;
+    private Random rand;
 
     public TaxonName() {
         nameGenerator = new NameGenerator();
         idGenerator = new TaxonIDGenerator();
+        rand = new Random(32);
     }
 
     public String next() {
@@ -41,8 +44,11 @@ public class TaxonName implements RandomGenerator{
     }
 
     private String getNameClassAxiom(String id) {
+        int r = rand.nextInt(100);
+        String[] nameClasses = {"scientificName", "genbankCommonName", "equivalentName", "synonymName", "misnomerName", "includesName",
+                "authorityName", "typeMaterialName", "blastName", "commonName", "misspellingName", "genbankSynonym" };
         String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/name/%s> <http://gcm.wdcm.org/" +
-                "ontology/gcmAnnotation/v1/nameclass> \"%s\" .", id, nameGenerator.next());
+                "ontology/gcmAnnotation/v1/nameclass> \"%s\" .", id, nameClasses[r%nameClasses.length]);
         return axiom+"\n";
     }
 

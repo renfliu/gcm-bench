@@ -1,6 +1,7 @@
 # Query 1
 # 简单的SPARQL查询，只有WHERE语句，结果为星型结构
 # 获取Enzyme数据
+# 测试结果通过
 PREFIX anno:<http://gcm.wdcm.org/ontology/gcmAnnotation/v1/>
 PREFIX taxon:<http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/>
 PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -20,33 +21,36 @@ WHERE {
 # Query 2
 # 简单的SPARQL查询，只有WHERE语句，结果为雪花结构
 # 获取与Gene相关的数据
+# 结果太多，需要再完善
 PREFIX anno:<http://gcm.wdcm.org/ontology/gcmAnnotation/v1/>
 PREFIX taxon:<http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/>
 PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 SELECT DISTINCT *
 WHERE {
     ?gene rdf:type anno:GeneNode;
-       anno:x-enzyme ?enzyme;
-       anno:x-pathway ?pathway;
-       anno:x-protein ?protein;
-       anno:x-genome ?genome;
-       anno:x-taxon ?taxon.
-    ?enzyme rdf:type anno:EnzymeNode;
-            anno:name ?enzymeName;
-            anno:description ?enzymeDescription.
-    ?pathway rdf:type anno:PathwayNode;
-             anno:organism ?pathwayOrganism.
-    ?protein rdf:type anno:ProteinNode;
-             anno:x-taonn ?proteinPathway;
-             anno:function ?proteinFuntion;
-             anno:sequenceLength ?proteinLength.
-    ?genome rdf:type anno:GenomeNode;
-            anno:definition ?genomeDefinition;
-            anno:x-taoxn ?genomeTaxon;
-            anno:accession ?genomeAccession.
+          anno:x-taxon ?taxon.
     ?taxon rdf:type anno:TaxonNode;
            anno:nodeRank ?taxonRank;
            anno:parentTaxid ?taxonParent.
+    OPTIONAL {
+        ?gene anno:x-pathway ?pathway.
+        ?pathway rdf:type anno:PathwayNode;
+                 anno:organism ?pathwayOrganism.
+    }
+    OPTIONAL {
+        ?gene anno:x-protein ?protein.
+        ?protein rdf:type anno:ProteinNode;
+                 anno:x-taxon ?proteinTaxon;
+                 anno:function ?proteinFuntion;
+                 anno:sequenceLength ?proteinLength.
+    }
+    OPTIONAL {
+        ?gene anno:x-genome ?genome.
+        ?genome rdf:type anno:GenomeNode;
+                anno:definition ?genomeDefinition;
+                anno:x-taoxn ?genomeTaxon;
+                anno:accession ?genomeAccession.
+    }
 }
 
 
