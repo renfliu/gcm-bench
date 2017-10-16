@@ -7,9 +7,7 @@ public class Test {
 
     public static void testAccession(String id) {
         Random rand = new Random();
-        for (int i = 0; i < 10; i++) {
-            System.out.println(rand.nextInt(2));
-        }
+        System.out.println(rand.nextInt(0));
     }
 
     public static int fun(int r) {

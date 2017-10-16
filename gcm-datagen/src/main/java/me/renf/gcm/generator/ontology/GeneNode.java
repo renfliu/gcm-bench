@@ -44,7 +44,7 @@ public class GeneNode implements NodeGenerator {
                 writer.write(getPathwayAxiom(id));
                 writer.write(getProteinAxiom(id));
                 writer.write(getGenomeAxiom(id));
-                //writer.write(getTaxonAxiom(id)); //没出现
+                writer.write(getTaxonAxiom(id)); //没出现
                 writer.write(getChromosomeAxiom(id));
                 writer.write(getDbXrefsAxiom(id));
                 writer.write(getDescriptionAxiom(id));
@@ -125,8 +125,9 @@ public class GeneNode implements NodeGenerator {
     }
 
     private String getTaxonAxiom(String id) {
+        long taxonNodes = new TaxonNode(config).getNodes();
         String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/gene/%s> <http://gcm.wdcm.org/ontology/" +
-                "gcmAnnotation/v1/x-taxon> <http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/%s> .", id, taxonIDGenerator.next());
+                "gcmAnnotation/v1/x-taxon> <http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/%s> .", id, taxonIDGenerator.random(taxonNodes+100));  // 增加一个随机值
         return axiom + "\n";
     }
 

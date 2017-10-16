@@ -13,7 +13,7 @@ import java.util.Random;
 
 public class TaxonNode implements NodeGenerator {
     private final char[] alpha = "ABCDEFGHIGKLMNOPQRSTUVWXYZ".toCharArray();
-    private final int AVG_TAXON_LINE = 10;
+    private final int AVG_TAXON_LINE = 12;
     private Logger logger = LoggerFactory.getLogger(TaxonNode.class);
     private GenConfig config;
     private long nodes;
@@ -29,13 +29,16 @@ public class TaxonNode implements NodeGenerator {
         idGenerator = new TaxonIDGenerator((int)nodes);
     }
 
+    public long getNodes() {
+        return nodes;
+    }
+
     public void generate() {
         try {
             DataWriter writer = DataWriterFactory.getWriter(config);
             for (long i = 0; i < nodes; i++) {
                 String id = getID();
-                writer.write(getAncestorTaxIDAxiom(id));
-                writer.write(getParentTaxIDAxiom(id));
+                writer.write(getAncestorAndParentTaxIDAxiom(id));
                 writer.write(getDivisionIDAxiom(id));
                 writer.write(getEmblCodeAxiom(id));
                 writer.write(getMitoGeneticCodeIdAxiom(id));
@@ -54,16 +57,22 @@ public class TaxonNode implements NodeGenerator {
         return idGenerator.next();
     }
 
-    private String getAncestorTaxIDAxiom(String id) {
-        String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/%s> <http://gcm.wdcm.org/ontology/" +
-                "gcmAnnotation/v1/ancestorTaxid> <http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/%s> .", id, getID());
-        return axiom + "\n";
-    }
-
-    private String getParentTaxIDAxiom(String id) {
-        String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/%s> <http://gcm.wdcm.org/ontology/" +
-                "gcmAnnotation/v1/parentTaxid> <http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/%s> .", id, getID());
-        return axiom + "\n";
+    private String getAncestorAndParentTaxIDAxiom(String id) {
+        int curID = Integer.valueOf(id);
+        StringBuilder sb = new StringBuilder();
+        int parentID = rand.nextInt(curID);
+        if (parentID > 0) {
+            sb.append(String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/%s> <http://gcm.wdcm.org/ontology/" +
+                    "gcmAnnotation/v1/parentTaxid> <http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/%s> .", id, parentID));
+            sb.append("\n");
+            int ancestorID = rand.nextInt(parentID);
+            if (ancestorID > 0) {
+                sb.append(String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/%s> <http://gcm.wdcm.org/ontology/" +
+                        "gcmAnnotation/v1/ancestorTaxid> <http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/%s> .", id, ancestorID));
+                sb.append("\n");
+            }
+        }
+        return sb.toString();
     }
 
     private String getDivisionIDAxiom(String id) {

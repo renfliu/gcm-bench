@@ -110,56 +110,57 @@ WHERE {
 # Query 5
 # 测试SPARQL的排序性能
 # 查找gene的数据，数量较大
+# 测试通过，需要检验数据量很大时的性能表现，在数据量很大时，可能出现结果太多，占用太多内存
 PREFIX anno:<http://gcm.wdcm.org/ontology/gcmAnnotation/v1/>
 PREFIX gene:<http://gcm.wdcm.org/ontology/gcmAnnotation/v1/gene/>
 PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 SELECT DISTINCT *
 WHERE {
     ?geneID rdf:type anno:GeneNode;
-            anno:geneType "protein-coding".
+            anno:geneType "protein-coding";
+            anno:x-protein ?protein;
+            anno:dbXrefs ?refs.
 }
 ORDER BY asc(?geneID)
 
-# Query 5
+# Query 6
 # 测试SPARQL的排序性能
-# 查找taxon的数据， 数据较小
+# 查找protein的数据
+# 通过测试， 数据较小，通过调整?length的长度来调整数量的大小，只能进行字符串的比较
 PREFIX anno:<http://gcm.wdcm.org/ontology/gcmAnnotation/v1/>
-PREFIX taxon:<http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/>
 PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 SELECT DISTINCT *
 WHERE {
-    ?taxonId anno:ancestorTaxid taxon:1270;
-             anno:nodeRank ?rank.
-    ?nameId anno:taxid ?taxonid;
-            anno:nameclass 'scientificName';
-            anno:taxname ?name.
+    ?protein rdf:type anno:ProteinNode;
+             anno:sequenceLength ?length.
+    FILTER (?length < "5").
 }
-ORDER BY asc(?taxonId)
+ORDER BY asc(?protein)
 
-# Query 6
+# Query 7
 # 测试aggregate函数的性能, count
 # 查找gene的数据
+# 通过测试
 PREFIX anno:<http://gcm.wdcm.org/ontology/gcmAnnotation/v1/>
-PREFIX gene:<http://gcm.wdcm.org/data/gcmAnnotation1/gene/>
 PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-SELECT DISTINCT (count(?geneId) as ?count)
+SELECT (count(?geneId) as ?count)
 WHERE {
-    ?geneId rdf:type anno:GeneType;
-            anno:geneType "protein-coding".
-}
-
-# Query 7 
-# 测试aggregate函数的性能, max/min
-PREFIX anno:<http://gcm.wdcm.org/ontology/gcmAnnotation/v1/>
-PREFIX gene:<http://gcm.wdcm.org/data/gcmAnnotation1/gene/>
-PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-SELECT DISTINCT (max(?geneId) as ?max)
-WHERE {
-    ?geneId rdf:type anno:GeneType;
+    ?geneId rdf:type anno:GeneNode;
             anno:geneType "protein-coding".
 }
 
 # Query 8
+# 测试aggregate函数的性能, max/min
+# 测试通过，gstore只支持count
+PREFIX anno:<http://gcm.wdcm.org/ontology/gcmAnnotation/v1/>
+PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+SELECT DISTINCT (max(?geneId) as ?max)
+WHERE {
+    ?geneId rdf:type anno:GeneNode;
+            anno:geneType "protein-coding".
+}
+
+# Query 9
 # 测试aggregate函数的性能, avg
 # 数据中不存在整数类型
 #PREFIX anno:<http://gcm.wdcm.org/ontology/gcmAnnotation/v1/>
@@ -171,7 +172,7 @@ WHERE {
 #            anno:geneType "protein-coding".
 #}
 
-# Query 9
+# Query 10
 # 综合性的测试
 # 得到http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/1270上的和关联在其后代上的所有的taxonomy的'scientificName'，并对这些'scientificName'进行限制（包含'2665'），并且计数
 PREFIX anno:<http://gcm.wdcm.org/ontology/gcmAnnotation/v1/>
@@ -192,7 +193,7 @@ WHERE {
     FILTER(regex(?name, '2665'))
 }
 
-# Query 10
+# Query 11
 # 综合性的测试
 # 得到http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/1270上的和关联在其后代上的所有的taxonomy的相关信息，并对他们的'scientificName'进行限制（包含'2665'）
 PREFIX anno:<http://gcm.wdcm.org/ontology/gcmAnnotation/v1/>
@@ -218,7 +219,7 @@ WHERE {
 }
 OFFSET 0 LIMIT 15
 
-# Query 11
+# Query 12
 # 综合性的测试
 # 得到关联在http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/1270上和其后代上的genome的相关信息，同时对这些genome的相关信息进行限制（某些属性中包含'SK58'字符串）
 PREFIX anno:<http://gcm.wdcm.org/ontology/gcmAnnotation/v1/>
@@ -256,7 +257,7 @@ WHERE {
 }
 OFFSET 0 LIMIT 15
 
-# Query 12
+# Query 13
 # 综合性测试
 # 获取关于gene的数据
 PREFIX anno:<http://gcm.wdcm.org/ontology/gcmAnnotation/v1/>
@@ -289,6 +290,6 @@ WHERE {
                    anno:sequenceLength ?length.
     }
     FILTER regex(str(?enzymeProduct), 'cells').
-    FILTER ( (?length > 10) && (?length < 500)).
+    FILTER ( (?length > "1") && (?length < "6")).
 }
 OFFSET 0 LIMIT 20
