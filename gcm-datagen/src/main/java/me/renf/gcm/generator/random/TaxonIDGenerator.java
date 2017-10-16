@@ -23,6 +23,14 @@ public class TaxonIDGenerator implements RandomGenerator{
     }
 
     /**
+     * 使用初始化的上界随机生成id
+     * @return id
+     */
+    public String random() {
+        return String.valueOf(rand.nextInt(max));
+    }
+
+    /**
      * 在给出范围内随机生成一个id
      * @param bound id的范围
      * @return id

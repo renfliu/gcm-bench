@@ -4,10 +4,7 @@ import me.renf.gcm.generator.GenConfig;
 import me.renf.gcm.generator.exceptions.WriterException;
 import me.renf.gcm.generator.output.DataWriter;
 import me.renf.gcm.generator.output.DataWriterFactory;
-import me.renf.gcm.generator.random.IDGenerator;
-import me.renf.gcm.generator.random.NameGenerator;
-import me.renf.gcm.generator.random.RandomGenerator;
-import me.renf.gcm.generator.random.TaxonIDGenerator;
+import me.renf.gcm.generator.random.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,6 +19,7 @@ public class GeneNode implements NodeGenerator {
     private RandomGenerator idGenerator;
     private RandomGenerator nameGenerator = new NameGenerator();
     private TaxonIDGenerator taxonIDGenerator = new TaxonIDGenerator();
+    private EnzymeIDGenertor enzymeIDGenertor;
     private Random rand = new Random();
     private GenomeNode genomeGenerator;
 
@@ -32,6 +30,8 @@ public class GeneNode implements NodeGenerator {
         nodes = config.getGeneLines() / AVG_GENE_LINE;
         idGenerator = new IDGenerator(8, (int)nodes);
         genomeGenerator = new GenomeNode(config);
+        long enzymeNodes = new EnzymeNode(config).getNodes();
+        enzymeIDGenertor = new EnzymeIDGenertor(enzymeNodes);
     }
 
     public void generate() {
@@ -84,11 +84,10 @@ public class GeneNode implements NodeGenerator {
         int r = rand.nextInt(100);
         if (r < 2) {
             String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/gene/%s> <http://gcm.wdcm.org/ontology/" +
-                    "gcmAnnotation/v1/x-enzyme> <http://gcm.wdcm.org/data/gcmAnnotation1/enzyme/%s> .", id, nameGenerator.next());
+                    "gcmAnnotation/v1/x-enzyme> <http://gcm.wdcm.org/data/gcmAnnotation1/enzyme/%s> .", id, enzymeIDGenertor.random());
             return axiom + "\n";
         }
         return "";
-
     }
 
     private String getPathwayAxiom(String id) {

@@ -1,9 +1,6 @@
 package me.renf.gcm.generator.random;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 public class EnzymeIDGenertor implements RandomGenerator {
     // 200 以内质数表
@@ -25,6 +22,10 @@ public class EnzymeIDGenertor implements RandomGenerator {
         id4 = 1;
     }
 
+    /**
+     * 生成下一个id
+     * @return id
+     */
     public String next() {
         id4++;
         if (id4 > max[3]) {
@@ -40,6 +41,30 @@ public class EnzymeIDGenertor implements RandomGenerator {
             id2 = 1;
         }
         return String.format("%d.%d.%d.%d", id1, id2, id3, id4);
+    }
+
+    /**
+     * 使用当前的上界随机生成一个id
+     * @return id
+     */
+    public String random() {
+        int max4 = max[3]+2;
+        int max3 = max[2]+2;
+        int max2 = max[1]+2;
+        int max1 = max[0]+2;
+        Random rand = new Random();
+        return String.format("%d.%d.%d.%d", rand.nextInt(max1), rand.nextInt(max2), rand.nextInt(max3), rand.nextInt(max4));
+    }
+
+    /**
+     * 传入id总数，重新计算id各部分的上界，在随机生成id
+     * @param nodes id总数
+     * @return id
+     */
+    public String random(long nodes) {
+        this.nodes = nodes;
+        calcMax();
+        return random();
     }
 
     private void calcMax() {
