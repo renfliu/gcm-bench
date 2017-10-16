@@ -98,7 +98,7 @@ abstract public class Platform {
             String line;
             StringBuilder queryBuilder = new StringBuilder();
             while((line = reader.readLine()) != null) {
-                if (line.startsWith("#")) {
+                if (line.trim().startsWith("#")) {
                     // step over this line
                 } else if (line.isEmpty()) {
                     if (queryBuilder.length() > 0 ) {
