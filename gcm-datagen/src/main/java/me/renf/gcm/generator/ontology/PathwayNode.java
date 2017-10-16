@@ -37,6 +37,10 @@ public class PathwayNode extends OntologyNode implements NodeGenerator{
         random = new Random(321321);
     }
 
+    public long getNodes() {
+        return nodes;
+    }
+
     public void generate() {
         try {
             DataWriter writer = DataWriterFactory.getWriter(config);

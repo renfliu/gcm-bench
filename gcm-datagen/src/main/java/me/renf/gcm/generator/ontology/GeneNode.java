@@ -20,6 +20,7 @@ public class GeneNode implements NodeGenerator {
     private RandomGenerator nameGenerator = new NameGenerator();
     private TaxonIDGenerator taxonIDGenerator = new TaxonIDGenerator();
     private EnzymeIDGenertor enzymeIDGenertor;
+    private PathwayIDGenerator pathwayIDGenerator;
     private Random rand = new Random();
     private GenomeNode genomeGenerator;
 
@@ -32,6 +33,8 @@ public class GeneNode implements NodeGenerator {
         genomeGenerator = new GenomeNode(config);
         long enzymeNodes = new EnzymeNode(config).getNodes();
         enzymeIDGenertor = new EnzymeIDGenertor(enzymeNodes);
+        long pathwayNodes = new PathwayNode(config).getNodes();
+        pathwayIDGenerator = new PathwayIDGenerator(pathwayNodes);
     }
 
     public void generate() {
@@ -98,7 +101,7 @@ public class GeneNode implements NodeGenerator {
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < (18 - Math.pow(n, 1/3.0)); i++) {
                 sb.append(String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/gene/%s> <http://gcm.wdcm.org/ontology/" +
-                        "gcmAnnotation/v1/x-pathway> <http://gcm.wdcm.org/data/gcmAnnotation1/pathway/%s> .", id, nameGenerator.next()));
+                        "gcmAnnotation/v1/x-pathway> <http://gcm.wdcm.org/data/gcmAnnotation1/pathway/%s> .", id, pathwayIDGenerator.random()));
                 sb.append("\n");
             }
             return sb.toString();

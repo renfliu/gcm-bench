@@ -56,6 +56,10 @@ public class PathwayIDGenerator implements RandomGenerator{
     }
 
 
+    /**
+     * 生成下一个id
+     * @return id
+     */
     public String next() {
         if (ids == null) {
             ids = new long[prefixSize];
@@ -65,6 +69,29 @@ public class PathwayIDGenerator implements RandomGenerator{
             prefixIndex = ++prefixIndex % prefixSize;
         }
         return String.format("%s%05d", prefixs[prefixIndex], ids[prefixIndex]++);
+    }
+
+    /**
+     * 利用当前的上界随机生成id
+     * @return id
+     */
+    public String random() {
+        int max = (int)(nodes / prefixSize) + 1;
+        max = (int)(max * 1.2);   // 扩大到原来的1.2倍
+        Random rand = new Random();
+        return String.format("%s%05d", prefixs[rand.nextInt(prefixSize)], rand.nextInt(max));
+    }
+
+
+    /**
+     * 重新用节点数设置上界，随机生成id
+     * @param nodes 节点数
+     * @return id
+     */
+    public String random(long nodes) {
+        this.nodes = nodes;
+        balanceNodeSize();
+        return random();
     }
 
 }
