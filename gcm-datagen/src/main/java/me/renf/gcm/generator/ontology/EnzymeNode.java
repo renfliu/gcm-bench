@@ -29,7 +29,7 @@ public class EnzymeNode extends OntologyNode implements NodeGenerator{
         classGenerator = new NameGenerator();
         geneGenerator = new KeggGeneGenerator();
         nameGenerator = new NameGenerator();
-        rand = new Random(432);
+        rand = new Random(nodes);
     }
 
     public long getNodes() {

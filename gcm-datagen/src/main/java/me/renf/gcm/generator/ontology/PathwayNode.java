@@ -34,7 +34,7 @@ public class PathwayNode extends OntologyNode implements NodeGenerator{
         nameGenerator = new NameGenerator();
         mapGenerator = new PathwayIDGenerator(nodes);
         keggGeneGenerator = new IDGenerator(9, 10000000);
-        random = new Random(321321);
+        random = new Random(nodes);
     }
 
     public long getNodes() {

@@ -19,7 +19,7 @@ public class TaxonName implements RandomGenerator{
     public TaxonName() {
         nameGenerator = new NameGenerator();
         idGenerator = new TaxonIDGenerator();
-        rand = new Random(32);
+        rand = new Random();
     }
 
     public String next() {

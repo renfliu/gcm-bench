@@ -17,7 +17,7 @@ public class TaxonNode implements NodeGenerator {
     private Logger logger = LoggerFactory.getLogger(TaxonNode.class);
     private GenConfig config;
     private long nodes;
-    private Random rand = new Random();
+    private Random rand;
     private TaxonName taxonName;
     private TaxonIDGenerator idGenerator;
 
@@ -27,6 +27,7 @@ public class TaxonNode implements NodeGenerator {
         nodes = config.getTaxonLines() / AVG_TAXON_LINE;
         taxonName = new TaxonName();
         idGenerator = new TaxonIDGenerator((int)nodes);
+        rand = new Random(nodes);
     }
 
     public long getNodes() {

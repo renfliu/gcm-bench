@@ -18,7 +18,7 @@ public class ProteinNode implements NodeGenerator{
     private Logger logger = LoggerFactory.getLogger(ProteinNode.class);
     private GenConfig config;
     private long nodes;
-    private Random rand = new Random(874);
+    private Random rand;
     private PdbNode pdb = new PdbNode();
     private PfamNode pfam = new PfamNode();
     private ProteinIDGenerator idGenerator;
@@ -32,6 +32,7 @@ public class ProteinNode implements NodeGenerator{
         nodes = config.getProteinLines() / AVG_PROTEIN_LINE;
         idGenerator = new ProteinIDGenerator(nodes);
         go_id = 0;
+        rand = new Random(nodes);
     }
 
     public long getNodes() {
