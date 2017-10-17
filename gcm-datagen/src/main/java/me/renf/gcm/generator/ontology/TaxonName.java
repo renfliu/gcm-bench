@@ -42,7 +42,7 @@ public class TaxonName implements RandomGenerator{
 
     private String getTaxIDAxiom(String id) {
         String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/name/%s> <http://gcm.wdcm.org/" +
-                "ontology/gcmAnnotation/v1/taxid> <http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/%s> .", id, idGenerator.next());
+                "ontology/gcmAnnotation/v1/taxid> <http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/%s> .", id, getIDNumber(id));
         return axiom+"\n";
     }
 
@@ -62,6 +62,14 @@ public class TaxonName implements RandomGenerator{
         String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/name/%s> <http://www.w3.org/" +
                 "1999/02/22-rdf-syntax-ns#type> <http://gcm.wdcm.org/ontology/gcmAnnotation/v1/TaxonName> .", id);
         return axiom+"\n";
+    }
+
+    private String getIDNumber(String id) {
+        String[] ids = id.split(":");
+        if (ids.length > 2) {
+            return ids[0];
+        }
+        return id;
     }
 
     private String getMD5(String s) {
