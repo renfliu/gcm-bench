@@ -14,14 +14,15 @@ import java.util.Random;
 public class GeneNode implements NodeGenerator {
     private Logger logger = LoggerFactory.getLogger(NodeGenerator.class);
     private GenConfig config;
-    private final int AVG_GENE_LINE = 7;
+    private final int AVG_GENE_LINE = 30;
     private long nodes;
     private RandomGenerator idGenerator;
     private RandomGenerator nameGenerator = new NameGenerator();
-    private TaxonIDGenerator taxonIDGenerator = new TaxonIDGenerator();
+    private TaxonIDGenerator taxonIDGenerator;
     private EnzymeIDGenertor enzymeIDGenertor;
     private PathwayIDGenerator pathwayIDGenerator;
-    private Random rand = new Random();
+    private ProteinIDGenerator proteinIDGenerator;
+    private Random rand;
     private GenomeNode genomeGenerator;
 
 
@@ -30,11 +31,17 @@ public class GeneNode implements NodeGenerator {
         this.config = config;
         nodes = config.getGeneLines() / AVG_GENE_LINE;
         idGenerator = new IDGenerator(8, (int)nodes);
+        long taxonNodes = new TaxonNode(config).getNodes();
+        taxonIDGenerator = new TaxonIDGenerator(taxonNodes);
         genomeGenerator = new GenomeNode(config);
         long enzymeNodes = new EnzymeNode(config).getNodes();
         enzymeIDGenertor = new EnzymeIDGenertor(enzymeNodes);
         long pathwayNodes = new PathwayNode(config).getNodes();
         pathwayIDGenerator = new PathwayIDGenerator(pathwayNodes);
+        long proteinNodes = new ProteinNode(config).getNodes();
+        proteinIDGenerator = new ProteinIDGenerator(proteinNodes);
+
+        rand = new Random(nodes);
     }
 
     public void generate() {
@@ -114,7 +121,7 @@ public class GeneNode implements NodeGenerator {
         int r = rand.nextInt(100);
         if (r%4 == 0) {
             String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/gene/%s> <http://gcm.wdcm.org/ontology/" +
-                    "gcmAnnotation/v1/x-protein> <http://gcm.wdcm.org/data/gcmAnnotation1/protein/%s> .", id, nameGenerator.next());
+                    "gcmAnnotation/v1/x-protein> <http://gcm.wdcm.org/data/gcmAnnotation1/protein/%s> .", id, proteinIDGenerator.random());
             return axiom + "\n";
         }
         return "";
@@ -129,7 +136,7 @@ public class GeneNode implements NodeGenerator {
     private String getTaxonAxiom(String id) {
         long taxonNodes = new TaxonNode(config).getNodes();
         String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/gene/%s> <http://gcm.wdcm.org/ontology/" +
-                "gcmAnnotation/v1/x-taxon> <http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/%s> .", id, taxonIDGenerator.random(taxonNodes+100));  // 增加一个随机值
+                "gcmAnnotation/v1/x-taxon> <http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/%s> .", id, taxonIDGenerator.random());  // 增加一个随机值
         return axiom + "\n";
     }
 

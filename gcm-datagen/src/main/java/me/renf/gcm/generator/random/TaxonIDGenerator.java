@@ -3,15 +3,18 @@ package me.renf.gcm.generator.random;
 import java.util.Random;
 
 public class TaxonIDGenerator implements RandomGenerator{
-    private Random rand = new Random(43254);
-    private int max = 1000000;
-    private int current;
+    private Random rand;
+    private long max;
+    private long current;
 
-    public TaxonIDGenerator() {}
+    public TaxonIDGenerator() {
+        this(1000);
+    }
 
-    public TaxonIDGenerator(int m) {
-        max = max > m ? max : m;
+    public TaxonIDGenerator(long m) {
+        max = m;
         current = 1;
+        rand = new Random(max);
     }
 
     /**
@@ -27,7 +30,7 @@ public class TaxonIDGenerator implements RandomGenerator{
      * @return id
      */
     public String random() {
-        return String.valueOf(rand.nextInt(max));
+        return String.valueOf(rand.nextInt((int)(max*1.2)));
     }
 
     /**

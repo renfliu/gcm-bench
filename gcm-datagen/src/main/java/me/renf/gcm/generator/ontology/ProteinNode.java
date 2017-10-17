@@ -5,6 +5,7 @@ import me.renf.gcm.generator.exceptions.WriterException;
 import me.renf.gcm.generator.output.DataWriter;
 import me.renf.gcm.generator.output.DataWriterFactory;
 import me.renf.gcm.generator.random.NameGenerator;
+import me.renf.gcm.generator.random.ProteinIDGenerator;
 import me.renf.gcm.generator.random.TaxonIDGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,13 +15,13 @@ import java.util.Random;
 
 public class ProteinNode implements NodeGenerator{
     private final int AVG_PROTEIN_LINE = 10;
-    private final char[] alphanum = "ABCDEFGHIGKLMNOPQRSTUVWXYZ1234567890".toCharArray();
     private Logger logger = LoggerFactory.getLogger(ProteinNode.class);
     private GenConfig config;
     private long nodes;
     private Random rand = new Random(874);
     private PdbNode pdb = new PdbNode();
     private PfamNode pfam = new PfamNode();
+    private ProteinIDGenerator idGenerator;
     private TaxonIDGenerator taxonIDGenerator = new TaxonIDGenerator();
     private NameGenerator nameGenerator = new NameGenerator();
     private int go_id;
@@ -29,7 +30,12 @@ public class ProteinNode implements NodeGenerator{
     public ProteinNode(GenConfig config) {
         this.config = config;
         nodes = config.getProteinLines() / AVG_PROTEIN_LINE;
+        idGenerator = new ProteinIDGenerator(nodes);
         go_id = 0;
+    }
+
+    public long getNodes() {
+        return nodes;
     }
 
     public void generate() {
@@ -57,16 +63,7 @@ public class ProteinNode implements NodeGenerator{
     }
 
     private String getID() {
-        char[] id = new char[12];
-        for(int i = 0; i < 12; i++) {
-            if (i == 6) id[i] = '_';
-            else id[i] = alphanum[rand.nextInt(36)];
-        }
-        if (rand.nextInt(10) < 5) {
-            return String.valueOf(id);
-        } else {
-            return "A0A0" + String.valueOf(id);
-        }
+        return idGenerator.next();
     }
 
     private String getGoAxiom(String id) {
