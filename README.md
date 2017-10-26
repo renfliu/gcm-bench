@@ -1,5 +1,9 @@
 # GCMBench 
 
+## Introduction
+
+[introduction](http://prof.ict.ac.cn/bdb_uploads/GCM-Bench/)
+
 RDF数据构成的知识图谱已经成为人工智能领域一支不可或缺的力量，同时也在许多其它领域发挥着重要的作用。而RDF数据管理系统的性能、容量等也影响着人们对这种工具的使用。GCMBench 是一个用于测试RDF管理系统的测试框架，可以对常用的RDF数据管理系统如Jena、GStore等进行测试，生成报告，以供研究人员参考。主要包含了RDF数据生成工具和系统评测框架两部分。
 
 
