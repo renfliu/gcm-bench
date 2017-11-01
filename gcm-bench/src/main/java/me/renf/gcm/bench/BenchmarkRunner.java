@@ -5,6 +5,7 @@ import me.renf.gcm.bench.domain.BenchmarkResult;
 import me.renf.gcm.bench.domain.LoadResult;
 import me.renf.gcm.bench.domain.QueryResult;
 import me.renf.gcm.bench.exception.BenchmarkLoadException;
+import me.renf.gcm.bench.monitor.Monitor;
 import me.renf.gcm.generator.GenConfig;
 import me.renf.gcm.generator.Generator;
 import me.renf.gcm.generator.exceptions.ArgumentException;
@@ -19,20 +20,23 @@ public class BenchmarkRunner {
 
     private Platform platform;
     private BenchConf conf;
+    private Monitor monitor;
 
 
-    public BenchmarkRunner(Platform platform, BenchConf conf) {
+    public BenchmarkRunner(Platform platform, BenchConf conf, Monitor monitor) {
         this.platform = platform;
         this.conf = conf;
+        this.monitor = monitor;
     }
 
     public BenchmarkResult execute() {
         // data generate
         if (conf.isGenerate()) {
             // FIXME: delete comment //
-            //genData();
+            genData();
         }
 
+        monitor.start();
         BenchmarkResult result = new BenchmarkResult();
 
         // initial platform
@@ -64,6 +68,7 @@ public class BenchmarkRunner {
         // platform exit
         platform.exit();
         logger.info(conf.getType() + " platform exited");
+        monitor.stop();
 
         return result;
     }
@@ -111,6 +116,12 @@ public class BenchmarkRunner {
             queryResult.setEndTime(System.currentTimeMillis());
             queryResults.add(queryResult);
             logger.info("job " + queryNumber + " over");
+
+            try {  // gstore connection reset
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
         return queryResults;

@@ -25,6 +25,10 @@ public class BenchConf {
     private String sparql;
     private String type;
 
+    private int monitorFreq;  // Millisecond
+    private boolean monitorCpu;
+    private boolean monitorMem;
+
     public void loadFromFile() throws IOException{
         Properties properties = new Properties();
         File confFile = new File(CONF_FILE);
@@ -47,6 +51,15 @@ public class BenchConf {
             setProteinRatio(Float.valueOf(properties.getProperty("proteinRatio", "0.0523")));
             setGeneRatio(Float.valueOf(properties.getProperty("geneRatio", "0.784")));
         } catch (NumberFormatException e) {
+            logger.error("解析配置文件出错: " + e.getMessage());
+        }
+
+        // Monitor Configuration
+        try {
+            setMonitorFreq(Integer.valueOf(properties.getProperty("monitorFreq", "1000")));
+            setMonitorCpu(Boolean.valueOf(properties.getProperty("monitorCpu", "true")));
+            setMonitorMem(Boolean.valueOf(properties.getProperty("monitorMem", "true")));
+        } catch (NumberFormatException e){
             logger.error("解析配置文件出错: " + e.getMessage());
         }
 
@@ -132,5 +145,29 @@ public class BenchConf {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public int getMonitorFreq() {
+        return monitorFreq;
+    }
+
+    public void setMonitorFreq(int monitorFreq) {
+        this.monitorFreq = monitorFreq;
+    }
+
+    public boolean isMonitorCpu() {
+        return monitorCpu;
+    }
+
+    public void setMonitorCpu(boolean monitorCpu) {
+        this.monitorCpu = monitorCpu;
+    }
+
+    public boolean isMonitorMem() {
+        return monitorMem;
+    }
+
+    public void setMonitorMem(boolean monitorMem) {
+        this.monitorMem = monitorMem;
     }
 }

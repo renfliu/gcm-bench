@@ -5,12 +5,14 @@ import me.renf.gcm.bench.domain.BenchmarkResult;
 import me.renf.gcm.bench.exception.BenchmarkLoadException;
 import me.renf.gcm.bench.gstore.GStorePlatform;
 import me.renf.gcm.bench.jena.JenaPlatform;
+import me.renf.gcm.bench.monitor.Monitor;
 import me.renf.gcm.bench.report.BenchmarkReport;
 import me.renf.gcm.bench.report.BenchmarkReportWriter;
 import me.renf.gcm.bench.report.html.HtmlBenchmarkReportGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.IOException;
 
 public class GCMBench {
@@ -22,7 +24,8 @@ public class GCMBench {
         // initial platform
         Platform platform = loadPlatform(conf);
         // run benchmark
-        BenchmarkResult result = new BenchmarkRunner(platform, conf).execute();
+        Monitor monitor = new Monitor(conf);
+        BenchmarkResult result = new BenchmarkRunner(platform, conf, monitor).execute();
         // generate report
         BenchmarkReportWriter reportWriter = new BenchmarkReportWriter();
         BenchmarkReport report = new HtmlBenchmarkReportGenerator().generateReportFromResult(result);

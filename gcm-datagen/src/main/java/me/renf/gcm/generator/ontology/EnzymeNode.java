@@ -119,6 +119,18 @@ public class EnzymeNode extends OntologyNode implements NodeGenerator{
         return sb.toString();
     }
 
+    private void writeOtherNameAxiom(String id, DataWriter writer) {
+        int r = rand.nextInt(4000);
+        int n = (int)(20 - 1.67*(Math.log(r) / Math.log(2)));
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < n; i++) {
+            sb.append(String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/enzyme/%s> <http://gcm.wdcm.org/ontology/" +
+                    "gcmAnnotation/v1/otherName> \"%s\" .", id, nameGenerator.next()));
+            sb.append("\n");
+        }
+        return sb.toString();
+    }
+
     private String getProductAxiom(String id) {
         int r = rand.nextInt(5000);
         int n = (int)(7 - 0.57*(Math.log(r) / Math.log(2)) + 0.7);
