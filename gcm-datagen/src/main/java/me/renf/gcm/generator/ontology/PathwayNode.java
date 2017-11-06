@@ -46,11 +46,11 @@ public class PathwayNode extends OntologyNode implements NodeGenerator{
             DataWriter writer = DataWriterFactory.getWriter(config);
             for (long i = 0; i < nodes; i++) {
                 String id = getID();
-                writer.println(getNameAxiom(id));
-                writer.println(getPathwaymapAxiom(id));
-                writer.println(getTypeAxiom(id));
-                writer.println(getOrganismAxiom(id));
-                writer.println(getKeggGeneAxiom(id));
+                writer.writeln(getNameAxiom(id));
+                writer.writeln(getPathwaymapAxiom(id));
+                writer.writeln(getTypeAxiom(id));
+                writer.writeln(getOrganismAxiom(id));
+                writer.writeln(getKeggGeneAxiom(id));
             }
         } catch (WriterException e) {
             logger.error(e.getMessage());

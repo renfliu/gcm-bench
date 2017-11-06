@@ -94,15 +94,6 @@ public class GenomeNode implements RandomGenerator {
     }
 
 
-    private void writeGeneAxiom(String id, DataWriter writer) throws IOException{
-        int r = rand.nextInt(4000) + 1;
-        int n = (int)(1701 - 10*(Math.log(r) / Math.log(1.05)));   //统计出的pathway出现概率的拟合曲线
-        for (int i = 0; i < n; i++) {
-            writer.write(String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/genome/%s> <http://gcm.wdcm.org/ontology/" +
-                    "gcmAnnotation/v1/x-gene> <http://gcm.wdcm.org/data/gcmAnnotation1/gene/%s> .\n", id, geneIDGenerator.next()));
-        }
-    }
-
     private String getGeneAxiom(String id) {
         int r = rand.nextInt(4000);
         int n = (int)(1701 - 10*(Math.log(r) / Math.log(1.05)));   //统计出的pathway出现概率的拟合曲线
@@ -113,6 +104,15 @@ public class GenomeNode implements RandomGenerator {
             sb.append("\n");
         }
         return sb.toString();
+    }
+
+    private void writeGeneAxiom(String id, DataWriter writer) throws IOException{
+        int r = rand.nextInt(4000) + 1;
+        int n = (int)(1701 - 10*(Math.log(r) / Math.log(1.05)));   //统计出的pathway出现概率的拟合曲线
+        for (int i = 0; i < n; i++) {
+            writer.write(String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/genome/%s> <http://gcm.wdcm.org/ontology/" +
+                    "gcmAnnotation/v1/x-gene> <http://gcm.wdcm.org/data/gcmAnnotation1/gene/%s> .\n", id, geneIDGenerator.next()));
+        }
     }
 
     private String getTaxonAxiom(String id) {

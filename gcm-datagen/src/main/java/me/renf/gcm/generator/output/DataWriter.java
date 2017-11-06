@@ -31,11 +31,7 @@ public class DataWriter {
         writer.write(s);
     }
 
-    public void print(String s) throws IOException {
-        writer.write(s);
-    }
-
-    public void println(String s) throws IOException {
+    public void writeln(String s) throws IOException {
         writer.write(s + "\n");
     }
 
