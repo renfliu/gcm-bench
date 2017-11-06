@@ -1,0 +1,37 @@
+<assembly>
+
+    <id>bin</id>
+
+    <formats>
+        <format>tar.gz</format>
+    </formats>
+
+    <dependencySets>
+        <dependencySet>
+            <outputDirectory>/</outputDirectory>
+            <includes>
+                <include>me.renf.gcm</include>
+            </includes>
+        </dependencySet>
+    </dependencySets>
+
+    <!-- 需要打包的文件 -->
+    <files>
+        <file>
+            <source>${project.basedir}/../README.md</source>
+            <outputDirectory>.</outputDirectory>
+        </file>
+    </files>
+    <!-- 需要打包的文件集 -->
+    <fileSets>
+        <fileSet>
+            <directory>bin</directory>
+            <outputDirectory>.</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>res</directory>
+            <outputDirectory>res</outputDirectory>
+        </fileSet>
+    </fileSets>
+
+</assembly>

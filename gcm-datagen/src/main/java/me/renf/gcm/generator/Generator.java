@@ -24,10 +24,11 @@ public class Generator {
                 System.out.println(r);
             }
         } catch (ArgumentException ae) {
-            System.out.println(ae.getMessage());
+            gen.logger.error(ae.getMessage());
             printUsage();
         } catch (Exception e) {
-            e.printStackTrace();
+            gen.logger.error(e.getMessage());
+            printUsage();
         }
     }
 
