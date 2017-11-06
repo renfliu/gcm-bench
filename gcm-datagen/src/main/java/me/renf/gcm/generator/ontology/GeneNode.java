@@ -51,7 +51,8 @@ public class GeneNode implements NodeGenerator {
                 String id = getID();
                 //TODO 重新统计gene的各项数据
                 writer.write(getEnzymeAxiom(id));
-                writer.write(getPathwayAxiom(id));
+                //writer.write(getPathwayAxiom(id));
+                writePathwayAxiom(id, writer);
                 writer.write(getProteinAxiom(id));
                 writer.write(getGenomeAxiom(id));
                 writer.write(getTaxonAxiom(id)); //没出现
@@ -114,6 +115,19 @@ public class GeneNode implements NodeGenerator {
             return sb.toString();
         }
         return "";
+    }
+
+    private void writePathwayAxiom(String id, DataWriter writer) throws IOException{
+        // pathway 从1-18都有，比例很低
+        int r = rand.nextInt(100);
+        if (r > 98) {
+            int n = rand.nextInt(5800);
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < (18 - Math.pow(n, 1/3.0)); i++) {
+                writer.write(String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/gene/%s> <http://gcm.wdcm.org/ontology/" +
+                        "gcmAnnotation/v1/x-pathway> <http://gcm.wdcm.org/data/gcmAnnotation1/pathway/%s> .\n", id, pathwayIDGenerator.random()));
+            }
+        }
     }
 
     private String getProteinAxiom(String id) {

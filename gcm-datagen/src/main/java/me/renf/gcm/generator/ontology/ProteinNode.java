@@ -44,9 +44,12 @@ public class ProteinNode implements NodeGenerator{
             DataWriter writer = DataWriterFactory.getWriter(config);
             for (long i = 0; i < nodes; i++) {
                 String id = getID();
-                writer.write(getGoAxiom(id));
-                writer.write(getPdbAxiom(id));
-                writer.write(getPfamAxiom(id));
+                //writer.write(getGoAxiom(id));
+                //writer.write(getPdbAxiom(id));
+                //writer.write(getPfamAxiom(id));
+                writeGoAxiom(id, writer);
+                writePdbAxiom(id, writer);
+                writePfamAxiom(id, writer);
                 writer.write(getTaxonAxiom(id));
                 writer.write(getAccessionAxiom(id));
                 writer.write(getDateCreatedAxiom(id));
@@ -88,6 +91,25 @@ public class ProteinNode implements NodeGenerator{
         return sb.toString();
     }
 
+    private void writeGoAxiom(String id, DataWriter writer) throws IOException {
+        int r = rand.nextInt(100);
+        int n = 0;
+        if (r > 30 && r < 51) n = 1;
+        else if (r < 68) n = 2;
+        else if (r < 81) n = 3;
+        else if (r < 90) n = 4;
+        else if (r < 95) n = 5;
+        else if (r < 97) n = 6;
+        else if (r < 98) n = 7;
+        else if (r < 99) n = 8;
+        else n = 9;
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < n; i++) {
+            writer.write(String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/protein/%s> <http://gcm.wdcm.org/ontology/" +
+                    "gcmAnnotation/v1/x-go> <http://purl.obolibrary.org/obo/%s> .\n", id, getOboID()));
+        }
+    }
+
     private String getPdbAxiom(String id) {
         int r = rand.nextInt(100);
         int n = 0;
@@ -105,6 +127,21 @@ public class ProteinNode implements NodeGenerator{
         return sb.toString();
     }
 
+    private void writePdbAxiom(String id, DataWriter writer) throws IOException {
+        int r = rand.nextInt(100);
+        int n = 0;
+        if (r > 96 && r < 99) {
+            n = rand.nextInt(3) +1;
+        }else if(r == 99) {
+            n = rand.nextInt(20) + 4;
+        }
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < n; i++) {
+            writer.write(String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/protein/%s> <http://gcm.wdcm.org/ontology/" +
+                    "gcmAnnotation/v1/x-pdb> <http://gcm.wdcm.org/data/gcmAnnotation1/pdb/%s> .\n", id, pdb.getID()));
+        }
+    }
+
     private String getPfamAxiom(String id) {
         int r = rand.nextInt(100);
         int n = 0;
@@ -117,6 +154,18 @@ public class ProteinNode implements NodeGenerator{
             sb.append("\n");
         }
         return sb.toString();
+    }
+
+    private void writePfamAxiom(String id, DataWriter writer) throws IOException{
+        int r = rand.nextInt(100);
+        int n = 0;
+        if (r < 96) n = rand.nextInt(5);
+        else n = rand.nextInt(10)+5;
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < n; i++) {
+            writer.write(String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/protein/%s> <http://gcm.wdcm.org/ontology/" +
+                    "gcmAnnotation/v1/x-pfam> <http://gcm.wdcm.org/data/gcmAnnotation1/pfam/%s> .\n", id, pfam.getID()));
+        }
     }
 
     private String getTaxonAxiom(String id) {
