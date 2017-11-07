@@ -13,7 +13,7 @@ import java.util.Random;
 
 public class EnzymeNode extends OntologyNode implements NodeGenerator{
     final Logger logger = LoggerFactory.getLogger(EnzymeNode.class);
-    final int AVG_NODE_LINE = 167;
+    final int AVG_NODE_LINE = 155;
     private long nodes;
     private RandomGenerator pathwayGenerator;
     private RandomGenerator classGenerator;
@@ -70,7 +70,7 @@ public class EnzymeNode extends OntologyNode implements NodeGenerator{
     }
 
     private void writeXPathwayAxiom(String id, DataWriter writer) throws IOException{
-        int r = rand.nextInt(4000);
+        int r = rand.nextInt(4000) + 1;   //去除0
         int n = (int)(15 - 1.17*(Math.log(r) / Math.log(2)));   //统计出的pathway出现概率的拟合曲线
         for (int i = 0; i < n; i++) {
             String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/enzyme/%s> <http://gcm.wdcm.org/ontology/" +
@@ -104,7 +104,7 @@ public class EnzymeNode extends OntologyNode implements NodeGenerator{
     }
 
     private void writeOtherNameAxiom(String id, DataWriter writer) throws IOException{
-        int r = rand.nextInt(4000);
+        int r = rand.nextInt(4000) + 1;  //去除0
         int n = (int)(20 - 1.67*(Math.log(r) / Math.log(2)));
         for (int i = 0; i < n; i++) {
             String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/enzyme/%s> <http://gcm.wdcm.org/ontology/" +
@@ -114,7 +114,7 @@ public class EnzymeNode extends OntologyNode implements NodeGenerator{
     }
 
     private void writeProductAxiom(String id, DataWriter writer) throws IOException {
-        int r = rand.nextInt(5000);
+        int r = rand.nextInt(5000) + 1;   //去除0
         int n = (int)(7 - 0.57*(Math.log(r) / Math.log(2)) + 0.7);
         for (int i = 0; i < n; i++) {
             String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/enzyme/%s> <http://gcm.wdcm.org/ontology/" +
@@ -124,7 +124,7 @@ public class EnzymeNode extends OntologyNode implements NodeGenerator{
     }
 
     private void writeSubstrateAxiom(String id, DataWriter writer) throws IOException {
-        int r = rand.nextInt(5000);
+        int r = rand.nextInt(5000) + 1;    //去除0
         int n = (int)(7 - 0.57*(Math.log(r) / Math.log(2)) + 0.7);
         for (int i = 0; i < n; i++) {
             String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/enzyme/%s> <http://gcm.wdcm.org/ontology/" +

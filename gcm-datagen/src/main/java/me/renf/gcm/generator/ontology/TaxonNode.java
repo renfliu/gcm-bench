@@ -13,7 +13,7 @@ import java.util.Random;
 
 public class TaxonNode implements NodeGenerator {
     private final char[] alpha = "ABCDEFGHIGKLMNOPQRSTUVWXYZ".toCharArray();
-    private final int AVG_TAXON_LINE = 12;
+    private final int AVG_TAXON_LINE = 10;
     private Logger logger = LoggerFactory.getLogger(TaxonNode.class);
     private GenConfig config;
     private long nodes;

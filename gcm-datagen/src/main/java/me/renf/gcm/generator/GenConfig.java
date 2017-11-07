@@ -5,13 +5,13 @@ import me.renf.gcm.generator.exceptions.ArgumentException;
 public class GenConfig {
     private String outFile;
     private long totalLines = 1000000L;
-    private float enzymeRatio = 0.0117f;
+    private float enzymeRatio = 0.0324f;
     private long enzymeLines;
-    private float pathwayRatio = 0.0287f;
+    private float pathwayRatio = 0.0494f;
     private long pathwayLines;
-    private float taxonRatio = 0.0619f;
+    private float taxonRatio = 0.0719f;
     private long taxonLines;
-    private float proteinRatio = 0.0523f;
+    private float proteinRatio = 0.0623f;
     private long proteinLines;
     private float geneRatio = 0.784f;
     private long geneLines;

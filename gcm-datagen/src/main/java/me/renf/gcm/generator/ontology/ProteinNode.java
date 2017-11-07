@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.util.Random;
 
 public class ProteinNode implements NodeGenerator{
-    private final int AVG_PROTEIN_LINE = 10;
+    private final int AVG_PROTEIN_LINE = 12;
     private Logger logger = LoggerFactory.getLogger(ProteinNode.class);
     private GenConfig config;
     private long nodes;

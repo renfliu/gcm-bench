@@ -16,8 +16,7 @@ import java.util.Random;
 
 public class PathwayNode extends OntologyNode implements NodeGenerator{
     final Logger logger = LoggerFactory.getLogger(PathwayNode.class);
-    final int AVG_KEGG_GENE = 18;
-    final float RATIO_ORGANISM = 0.00324f;
+    final int AVG_NODE_LINE = 37;
     private long nodes;
     private long id;
     private RandomGenerator idGenerator;
@@ -30,7 +29,7 @@ public class PathwayNode extends OntologyNode implements NodeGenerator{
         super(config);
         long lines = config.getPathwayLines();
         id = 0;
-        nodes = lines / (AVG_KEGG_GENE + 4);
+        nodes = lines / AVG_NODE_LINE;
         nameGenerator = new NameGenerator();
         mapGenerator = new PathwayIDGenerator(nodes);
         keggGeneGenerator = new IDGenerator(9, 10000000);

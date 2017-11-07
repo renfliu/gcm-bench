@@ -48,8 +48,11 @@ public class PathwayIDGenerator implements RandomGenerator{
             prefix[2] = alphabet[rand.nextInt(26)];
             if (index > 20) {
                 prefix[3] = alphabet[rand.nextInt(26)];
+                prefixSet.add(String.valueOf(prefix));
+            }else {
+                prefixSet.add(String.valueOf(prefix, 0, 3));
             }
-            prefixSet.add(String.valueOf(prefix));
+
         }
         prefixSize = prefixSet.size();
         prefixs = prefixSet.toArray(new String[prefixSize]);

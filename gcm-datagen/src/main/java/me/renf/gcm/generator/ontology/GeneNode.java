@@ -14,7 +14,7 @@ import java.util.Random;
 public class GeneNode implements NodeGenerator {
     private Logger logger = LoggerFactory.getLogger(NodeGenerator.class);
     private GenConfig config;
-    private final int AVG_GENE_LINE = 30;
+    private final double AVG_GENE_LINE = 13.6;
     private long nodes;
     private RandomGenerator idGenerator;
     private RandomGenerator nameGenerator = new NameGenerator();
@@ -29,7 +29,7 @@ public class GeneNode implements NodeGenerator {
 
     public GeneNode(GenConfig config) {
         this.config = config;
-        nodes = config.getGeneLines() / AVG_GENE_LINE;
+        nodes = (long)(config.getGeneLines() / AVG_GENE_LINE);
         idGenerator = new IDGenerator(8, (int)nodes);
         long taxonNodes = new TaxonNode(config).getNodes();
         taxonIDGenerator = new TaxonIDGenerator(taxonNodes);
