@@ -98,6 +98,24 @@
                                         <td th:text="${result.endTime}">null</td>
                                     </tr>
                                     <tr>
+                                        <th>开始前CPU利用率</th>
+                                        <td th:text="${result.cpuBefore}">null</td>
+                                        <th>开始前内存占用</th>
+                                        <td th:text="${result.memBefore}">null</td>
+                                    </tr>
+                                    <tr>
+                                        <th>CPU平均利用率</th>
+                                        <td th:text="${result.cpuAverage}">null</td>
+                                        <th>内存平均占用</th>
+                                        <td th:text="${result.memAverage}">null</td>
+                                    </tr>
+                                    <tr>
+                                        <th>结束后CPU利用率</th>
+                                        <td th:text="${result.cpuAfter}">null</td>
+                                        <th>结束后内存占用</th>
+                                        <td th:text="${result.memAfter}">null</td>
+                                    </tr>
+                                    <tr>
                                         <th>描述</th>
                                         <td colspan="3" th:text="${result.description}"></td>
                                     </tr>

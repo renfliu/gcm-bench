@@ -2,7 +2,6 @@ package me.renf.gcm.bench;
 
 import me.renf.gcm.bench.conf.BenchConf;
 import me.renf.gcm.bench.exception.BenchmarkLoadException;
-import me.renf.gcm.bench.gstore.query.GstoreQuery;
 
 import java.io.*;
 import java.util.ArrayList;

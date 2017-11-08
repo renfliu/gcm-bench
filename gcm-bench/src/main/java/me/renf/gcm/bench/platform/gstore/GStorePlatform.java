@@ -1,18 +1,15 @@
-package me.renf.gcm.bench.gstore;
+package me.renf.gcm.bench.platform.gstore;
 
 import jgsc.GstoreConnector;
-import me.renf.gcm.bench.QueryJob;
 import me.renf.gcm.bench.conf.BenchConf;
 import me.renf.gcm.bench.Platform;
 import me.renf.gcm.bench.conf.GstoreConf;
 import me.renf.gcm.bench.exception.BenchmarkLoadException;
-import me.renf.gcm.bench.gstore.query.GstoreQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.net.ConnectException;
 
 public class GStorePlatform extends Platform{
     private final Logger logger = LoggerFactory.getLogger(GStorePlatform.class);

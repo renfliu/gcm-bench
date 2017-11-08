@@ -7,7 +7,11 @@ public class Test {
         BenchConf conf = new BenchConf();
         conf.loadFromFile();
         System.out.println(conf.getDataset());
-        String path = Test.class.getClassLoader().getResource("html").getPath();
-        System.out.println(path);
+        modify(conf);
+        System.out.println(conf.getDataset());
+    }
+
+    public static void modify(BenchConf conf) {
+        conf.setDataset("test");
     }
 }

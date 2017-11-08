@@ -6,6 +6,7 @@ import java.util.Map;
 public class Result {
     private Map<String, String> load;
     private List<Map<String, String>> querys;
+    private MonitorInfo monitorInfo;
 
     public Map<String, String> getLoad() {
         return load;
@@ -21,5 +22,13 @@ public class Result {
 
     public void setQuerys(List<Map<String, String>> querys) {
         this.querys = querys;
+    }
+
+    public MonitorInfo getMonitorInfo() {
+        return monitorInfo;
+    }
+
+    public void setMonitorInfo(MonitorInfo monitorInfo) {
+        this.monitorInfo = monitorInfo;
     }
 }

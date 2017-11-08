@@ -10,9 +10,9 @@ WHERE {
     ?e rdf:type anno:EnzymeNode;
        anno:name ?name;
        anno:description ?description;
-       anno:history ?history;
-       anno:class ?class;
-       anno:x-pathway ?pathway.
+       anno:history ?history.
+    OPTIONAL { ?e anno:class ?class. }
+    OPTIONAL { ?e anno:x-pathway ?pathway. }
     OPTIONAL { ?e anno:keggGene ?gene. }
     OPTIONAL { ?e anno:product ?product. }
 }
@@ -28,24 +28,28 @@ PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 SELECT DISTINCT *
 WHERE {
     ?gene rdf:type anno:GeneNode;
-          anno:x-taxon ?taxon;
-          anno:x-pathway ?pathway;
-          anno:x-genome ?genome.
+          anno:x-taxon ?taxon.
     ?taxon rdf:type anno:TaxonNode;
            anno:nodeRank ?taxonRank;
            anno:parentTaxid ?taxonParent.
-    ?pathway rdf:type anno:PathwayNode;
+    OPTIONAL {
+        ?gene anno:x-pathway ?pathway.
+        ?pathway rdf:type anno:PathwayNode;
                  anno:organism ?pathwayOrganism.
-    ?genome rdf:type anno:GenomeNode;
-            anno:definition ?genomeDefinition;
-            anno:x-taoxn ?genomeTaxon;
-            anno:accession ?genomeAccession.
+    }
     OPTIONAL {
         ?gene anno:x-protein ?protein.
         ?protein rdf:type anno:ProteinNode;
                  anno:x-taxon ?proteinTaxon;
                  anno:function ?proteinFuntion;
                  anno:sequenceLength ?proteinLength.
+    }
+    OPTIONAL {
+        ?gene anno:x-genome ?genome.
+        ?genome rdf:type anno:GenomeNode;
+                anno:definition ?genomeDefinition;
+                anno:x-taoxn ?genomeTaxon;
+                anno:accession ?genomeAccession.
     }
 }
 

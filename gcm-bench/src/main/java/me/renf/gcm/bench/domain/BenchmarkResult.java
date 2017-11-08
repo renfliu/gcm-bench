@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BenchmarkResult {
+    private long startTime;
+    private long endTime;
     private LoadResult loadResult;
     private List<QueryResult> queryResults;
+    private MonitorInfo monitorInfo;
 
     public BenchmarkResult() {
         queryResults = new ArrayList<>();
@@ -13,6 +16,22 @@ public class BenchmarkResult {
 
     public void addQueryResult(QueryResult queryResult) {
         queryResults.add(queryResult);
+    }
+
+    public long getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(long startTime) {
+        this.startTime = startTime;
+    }
+
+    public long getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(long endTime) {
+        this.endTime = endTime;
     }
 
     public LoadResult getLoadResult() {
@@ -29,5 +48,13 @@ public class BenchmarkResult {
 
     public void setQueryResults(List<QueryResult> queryResults) {
         this.queryResults = queryResults;
+    }
+
+    public MonitorInfo getMonitorInfo() {
+        return monitorInfo;
+    }
+
+    public void setMonitorInfo(MonitorInfo monitorInfo) {
+        this.monitorInfo = monitorInfo;
     }
 }

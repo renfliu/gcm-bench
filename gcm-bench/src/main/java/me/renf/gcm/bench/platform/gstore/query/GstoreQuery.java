@@ -1,4 +1,4 @@
-package me.renf.gcm.bench.gstore.query;
+package me.renf.gcm.bench.platform.gstore.query;
 
 import jgsc.GstoreConnector;
 import me.renf.gcm.bench.QueryJob;

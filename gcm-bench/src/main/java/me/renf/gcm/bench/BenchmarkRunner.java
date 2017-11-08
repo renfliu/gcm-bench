@@ -33,11 +33,13 @@ public class BenchmarkRunner {
         // data generate
         if (conf.isGenerate()) {
             // FIXME: delete comment //
-            genData();
+            //genData();  // just for test
         }
 
+        // start monitor
         monitor.start();
         BenchmarkResult result = new BenchmarkResult();
+        result.setStartTime(System.currentTimeMillis());
 
         // initial platform
         logger.info(conf.getType() + " platform is initializing.");
@@ -68,7 +70,11 @@ public class BenchmarkRunner {
         // platform exit
         platform.exit();
         logger.info(conf.getType() + " platform exited");
+
+        // monitoring data collect
         monitor.stop();
+        result.setEndTime(System.currentTimeMillis());
+        result = monitor.addMonitorInfo(result);
 
         return result;
     }
@@ -117,7 +123,8 @@ public class BenchmarkRunner {
             queryResults.add(queryResult);
             logger.info("job " + queryNumber + " over");
 
-            try {  // gstore connection reset
+            try {
+                // gstore connection reset
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();

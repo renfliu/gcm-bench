@@ -58,11 +58,11 @@ public class HtmlBenchmarkReportGenerator implements BenchmarkReportGenerator{
         conf.put("isGenerate", String.valueOf(benchConf.isGenerate()));
         conf.put("dataset", benchConf.getDataset());
         conf.put("dataset line number", String.valueOf(benchConf.getLineNumber()));
-        conf.put("enzyme ratio", String.valueOf(benchConf.getEnzymeRatio())+"%");
-        conf.put("pathway ratio", String.valueOf(benchConf.getPathwayRatio())+"%");
-        conf.put("taxonomy ratio", String.valueOf(benchConf.getTaxonRatio())+"%");
-        conf.put("protein ratio", String.valueOf(benchConf.getProteinRatio())+"%");
-        conf.put("gene ratio", String.valueOf(benchConf.getGeneRatio())+"%");
+        conf.put("enzyme ratio", String.valueOf(benchConf.getEnzymeRatio()*100)+"%");
+        conf.put("pathway ratio", String.valueOf(benchConf.getPathwayRatio()*100)+"%");
+        conf.put("taxonomy ratio", String.valueOf(benchConf.getTaxonRatio()*100)+"%");
+        conf.put("protein ratio", String.valueOf(benchConf.getProteinRatio()*100)+"%");
+        conf.put("gene ratio", String.valueOf(benchConf.getGeneRatio()*100)+"%");
         conf.put("query file", benchConf.getSparql());
         report.setConf(conf);
     }
@@ -78,16 +78,24 @@ public class HtmlBenchmarkReportGenerator implements BenchmarkReportGenerator{
         // load
         Map<String, String> load = new LinkedHashMap<>();
         LoadResult loadResult = benchResult.getLoadResult();
+        MonitorInfo loadInfo = loadResult.getMonitorInfo();
         load.put("dataset", loadResult.getDatasetName());
         load.put("dataset size", String.valueOf(loadResult.getDatasetSize()));
         load.put("start time", dateFormat.format(new Date(loadResult.getStartTime())));
         load.put("end time", dateFormat.format(new Date(loadResult.getEndTime())));
         load.put("duration", String.valueOf((loadResult.getEndTime()-loadResult.getStartTime())/1000.0)+"s");
+        load.put("CPU utilization before load", String.valueOf(loadInfo.getCpuBefore()));
+        load.put("CPU utilization", String.valueOf(loadInfo.getCpuAverage()));
+        load.put("CPU utilization after load", String.valueOf(loadInfo.getCpuAfter()));
+        load.put("Memory occupation before load", String.valueOf(loadInfo.getMemBefore()));
+        load.put("Memory occupation", String.valueOf(loadInfo.getMemAverage()));
+        load.put("Memory occupation after load", String.valueOf(loadInfo.getMemAfter()));
         result.setLoad(load);
 
         // query
         List<Map<String, String>> querys = new ArrayList<>();
         for (QueryResult queryResult : benchResult.getQueryResults()) {
+            MonitorInfo queryInfo = queryResult.getMonitorInfo();
             Map<String, String> query = new LinkedHashMap<>();
             query.put("time", String.valueOf((queryResult.getEndTime()-queryResult.getStartTime())/1000.0)+"s");
             query.put("startTime", dateFormat.format(new Date(queryResult.getStartTime())));
@@ -95,6 +103,12 @@ public class HtmlBenchmarkReportGenerator implements BenchmarkReportGenerator{
             query.put("description", "");
             query.put("query", queryResult.getQuery());
             query.put("answer", queryResult.getResult());
+            query.put("cpuBefore", String.valueOf(queryInfo.getCpuBefore()));
+            query.put("cpuAverage", String.valueOf(queryInfo.getCpuAverage()));
+            query.put("cpuAfter", String.valueOf(queryInfo.getCpuAfter()));
+            query.put("memBefore", String.valueOf(queryInfo.getMemBefore()));
+            query.put("memAverage", String.valueOf(queryInfo.getMemAverage()));
+            query.put("memAfter", String.valueOf(queryInfo.getMemAfter()));
             querys.add(query);
         }
         result.setQuerys(querys);
@@ -104,6 +118,7 @@ public class HtmlBenchmarkReportGenerator implements BenchmarkReportGenerator{
 
     private void genReportSummary(BenchmarkResult benchResult) {
         Map<String, String> summary = new LinkedHashMap<>();
+        MonitorInfo info = benchResult.getMonitorInfo();
 
         int failJobs = 0;
         long totalTime = 0;
@@ -122,6 +137,8 @@ public class HtmlBenchmarkReportGenerator implements BenchmarkReportGenerator{
             summary.put("total query time", String.valueOf(totalTime / 1000.0)+"s");
             summary.put("average query time", String.valueOf((totalTime / 1000.0) / jobSize)+"s");
         }
+        summary.put("average CPU utilization", String.valueOf(info.getCpuAverage()));
+        summary.put("average memory occupation", String.valueOf(info.getMemAverage()));
 
         report.setSummary(summary);
     }

@@ -5,6 +5,7 @@ public class LoadResult {
     private long endTime;
     private long datasetSize;
     private String datasetName;
+    private MonitorInfo monitorInfo;
 
     public long getStartTime() {
         return startTime;
@@ -36,5 +37,13 @@ public class LoadResult {
 
     public void setDatasetName(String datasetName) {
         this.datasetName = datasetName;
+    }
+
+    public MonitorInfo getMonitorInfo() {
+        return monitorInfo;
+    }
+
+    public void setMonitorInfo(MonitorInfo monitorInfo) {
+        this.monitorInfo = monitorInfo;
     }
 }

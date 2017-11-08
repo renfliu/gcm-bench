@@ -13,42 +13,41 @@ public class BenchConf {
     private final Logger logger = LoggerFactory.getLogger(BenchConf.class);
     private final String CONF_FILE = "conf/conf.properties";
 
-    private boolean generator;
-    private String dataset;
-    private long lineNumber;
-    private float enzymeRatio;
-    private float pathwayRatio;
-    private float taxonRatio;
-    private float proteinRatio;
-    private float geneRatio;
+    private boolean generate;      // whether to generate data
+    private String dataset;        // the file name of generated data
+    private long lineNumber;       // the line number of generated data
+    private float enzymeRatio;     // the enzyme ratio in generated data
+    private float pathwayRatio;    // the pathway ratio in generated data
+    private float taxonRatio;      // the taxonomy ratio in generated data
+    private float proteinRatio;    // the protein ratio in generated data
+    private float geneRatio;       // the gene ratio in generated data
 
-    private String sparql;
-    private String type;
+    private String sparql;         // the SPARQL query file name
+    private String type;           // the platform to benchmark, like gstore, jena, virtuoso
 
-    private int monitorFreq;  // Millisecond
-    private boolean monitorCpu;
-    private boolean monitorMem;
+    private int monitorFreq;       // Millisecond
+    private boolean monitorCpu;    // whether to monitor cpu
+    private boolean monitorMem;    // whether to monitor memory
 
     public void loadFromFile() throws IOException{
-        Properties properties = new Properties();
-        File confFile = new File(CONF_FILE);
-
         InputStream inputStream = new FileInputStream(new File(CONF_FILE));
+        Properties properties = new Properties();
         properties.load(inputStream);
 
         setGenerate(Boolean.valueOf(properties.getProperty("dataGenerate", "true")));
         setDataset(properties.getProperty("dataset", "data.n3"));
         setType(properties.getProperty("benchType", "gstore"));
-        if (isGenerate()) {
+        if (!isGenerate()) {
             setDataset(properties.getProperty("benchData", "data.n3"));
             setSparql(properties.getProperty("sparql", "query.sql"));
         }
         try {
+            // the ratio of the generated entity
             setLineNumber(Long.valueOf(properties.getProperty("lineNumber", "1000000")));
-            setEnzymeRatio(Float.valueOf(properties.getProperty("enzymeRatio", "0.0117")));
-            setPathwayRatio(Float.valueOf(properties.getProperty("pathwayRatio", "0.0287")));
-            setTaxonRatio(Float.valueOf(properties.getProperty("taxonRatio", "0.0619")));
-            setProteinRatio(Float.valueOf(properties.getProperty("proteinRatio", "0.0523")));
+            setEnzymeRatio(Float.valueOf(properties.getProperty("enzymeRatio", "0.0324")));
+            setPathwayRatio(Float.valueOf(properties.getProperty("pathwayRatio", "0.0494")));
+            setTaxonRatio(Float.valueOf(properties.getProperty("taxonRatio", "0.0719")));
+            setProteinRatio(Float.valueOf(properties.getProperty("proteinRatio", "0.0623")));
             setGeneRatio(Float.valueOf(properties.getProperty("geneRatio", "0.784")));
         } catch (NumberFormatException e) {
             logger.error("解析配置文件出错: " + e.getMessage());
@@ -67,11 +66,11 @@ public class BenchConf {
     }
 
     public boolean isGenerate() {
-        return generator;
+        return generate;
     }
 
     public void setGenerate(boolean generate) {
-        this.generator = generate;
+        this.generate = generate;
     }
 
     public String getDataset() {

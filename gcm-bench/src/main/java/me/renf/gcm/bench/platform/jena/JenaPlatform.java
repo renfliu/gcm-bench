@@ -1,12 +1,9 @@
-package me.renf.gcm.bench.jena;
+package me.renf.gcm.bench.platform.jena;
 
 import me.renf.gcm.bench.Platform;
-import me.renf.gcm.bench.QueryJob;
 import me.renf.gcm.bench.conf.BenchConf;
 import me.renf.gcm.bench.conf.JenaConf;
 import me.renf.gcm.bench.exception.BenchmarkLoadException;
-import me.renf.gcm.bench.gstore.query.GstoreQuery;
-import me.renf.gcm.bench.jena.query.JenaQuery;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
@@ -15,10 +12,6 @@ import org.apache.jena.rdfconnection.RDFConnection;
 import org.apache.jena.rdfconnection.RDFConnectionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class JenaPlatform extends Platform{
     private final Logger logger = LoggerFactory.getLogger(JenaPlatform.class);

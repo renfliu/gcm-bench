@@ -1,4 +1,4 @@
-package me.renf.gcm.bench.jena.query;
+package me.renf.gcm.bench.platform.jena.query;
 
 import me.renf.gcm.bench.QueryJob;
 

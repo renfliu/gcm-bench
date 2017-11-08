@@ -37,6 +37,7 @@ ul.doc-sidebar-nav li.active a{
     margin-bottom: 0;
 }
 .result pre {
+    max-height: 1000px;
     margin-bottom: 0;
     border: none;
     -webkit-border-radius: 0;
