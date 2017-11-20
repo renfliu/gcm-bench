@@ -16,6 +16,7 @@ WHERE {
     OPTIONAL { ?e anno:keggGene ?gene. }
     OPTIONAL { ?e anno:product ?product. }
 }
+LIMIT 100
 
 
 # Query 2
@@ -48,6 +49,7 @@ WHERE {
                  anno:sequenceLength ?proteinLength.
     }
 }
+LIMIT 100
 
 
 # Query 3
@@ -71,6 +73,7 @@ WHERE {
                 anno:taxname ?name.
     }
 }
+LIMIT 100
 
 # Query 4
 # 测试SPARQL中的FILTER
@@ -89,6 +92,7 @@ WHERE {
                       anno:nodeRank ?rank.
     FILTER regex(str(?rank), "order", 'i').
 }
+LIMIT 100
 # gene 没有与enzyme相连，没有product，废弃
 #PREFIX anno:<http://gcm.wdcm.org/ontology/gcmAnnotation/v1/>
 #PREFIX gene:<http://gcm.wdcm.org/ontology/gcmAnnotation/v1/gene/>
@@ -120,6 +124,7 @@ WHERE {
             anno:dbXrefs ?refs.
 }
 ORDER BY asc(?geneID)
+LIMIT 100
 
 # Query 6
 # 测试SPARQL的排序性能
@@ -134,6 +139,7 @@ WHERE {
     FILTER (?length < "5").
 }
 ORDER BY asc(?protein)
+LIMIT 100
 
 # Query 7
 # 测试aggregate函数的性能, count
@@ -146,6 +152,7 @@ WHERE {
     ?geneId rdf:type anno:GeneNode;
             anno:geneType "protein-coding".
 }
+LIMIT 100
 
 # Query 8
 # 测试aggregate函数的性能, max/min
@@ -157,6 +164,7 @@ WHERE {
     ?geneId rdf:type anno:GeneNode;
             anno:geneType "protein-coding".
 }
+LIMIT 100
 
 # Query 9
 # 测试aggregate函数的性能, avg
@@ -190,6 +198,7 @@ WHERE {
                 anno:taxname ?name.
     }
 }
+LIMIT 100
 
 # Query 11
 # 综合性的测试
