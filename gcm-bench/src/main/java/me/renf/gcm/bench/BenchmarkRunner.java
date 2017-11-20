@@ -12,6 +12,7 @@ import me.renf.gcm.generator.exceptions.ArgumentException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -101,6 +102,7 @@ public class BenchmarkRunner {
     private LoadResult runLoad() {
         LoadResult loadResult = new LoadResult();
         loadResult.setDatasetName(conf.getDataset());
+        loadResult.setDatasetSize(new File(conf.getDataset()).length());
 
         loadResult.setStartTime(System.currentTimeMillis());
         platform.loadData();
