@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
-CLASS_PATH=`pwd`/../lib
+CLASS_PATH=`pwd`/lib
 
-java -jar gcm-bench-0.1.jar -classpath ../lib/*
+# 已经在jar里定义classpath
+#java -jar gcm-bench-0.1.jar -classpath ${CLASS_PATH}/*
+java -jar gcm-bench-0.1.jar

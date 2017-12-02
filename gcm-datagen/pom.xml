@@ -67,6 +67,7 @@
                 </executions>
             </plugin>
 
+            <!--  集成包 *.tar.gz  -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>

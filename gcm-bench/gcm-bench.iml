@@ -72,13 +72,6 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="library" name="Maven: org.apache.jena:jena-jdbc-driver-bundle:3.4.0" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.jena:jena-jdbc-driver-mem:3.4.0" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.jena:jena-jdbc-core:3.4.0" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.jena:jena-jdbc-driver-remote:3.4.0" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.jena:jena-jdbc-driver-tdb:3.4.0" level="project" />
-    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.25" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.jena:apache-jena-libs:3.4.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.jena:jena-tdb:3.4.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.jena:jena-arq:3.4.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.jena:jena-core:3.4.0" level="project" />
@@ -95,6 +88,7 @@
     <orderEntry type="library" name="Maven: org.apache.commons:commons-csv:1.4" level="project" />
     <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.4" level="project" />
     <orderEntry type="library" name="Maven: org.apache.jena:jena-rdfconnection:3.4.0" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.25" level="project" />
     <orderEntry type="module-library">
       <library name="Maven: virtuoso:jdbc4:4.2">
         <CLASSES>
