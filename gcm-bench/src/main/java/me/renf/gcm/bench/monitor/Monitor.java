@@ -37,7 +37,7 @@ public class Monitor {
 
     private Sigar initSigar() {
         // set system
-        String libpath = new File("gcm-bench/lib").getAbsolutePath();
+        String libpath = new File("lib").getAbsolutePath();
         String OS = System.getProperty("os.name", "generic");
         String path = System.getProperty("java.library.path");
         if (OS.indexOf("win") > 0 ) {    //windows

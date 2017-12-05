@@ -29,8 +29,8 @@
             <outputDirectory>.</outputDirectory>
         </fileSet>
         <fileSet>
-            <directory>../gcm-datagen/bin</directory>
-            <outputDirectory>.</outputDirectory>
+            <directory>res</directory>
+            <outputDirectory>res</outputDirectory>
         </fileSet>
         <fileSet>
             <directory>conf</directory>
@@ -39,6 +39,10 @@
         <fileSet>
             <directory>lib</directory>
             <outputDirectory>lib</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>../gcm-datagen/bin</directory>
+            <outputDirectory>.</outputDirectory>
         </fileSet>
         <fileSet>
             <directory>../gcm-datagen/res</directory>

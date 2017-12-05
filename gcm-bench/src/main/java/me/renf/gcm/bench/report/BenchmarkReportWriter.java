@@ -14,23 +14,26 @@ public class BenchmarkReportWriter {
     public void write(BenchmarkReport report) {
         File reportFile = new File("report");
 
-        logger.info("clear old report");
-        try {
-            Files.walkFileTree(reportFile.toPath(), new SimpleFileVisitor<Path>() {
-                @Override
-                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                    Files.delete(file);
-                    return FileVisitResult.CONTINUE;
-                }
+        // cleaning old report
+        if (reportFile.exists()) {
+            logger.info("cleaning old report");
+            try {
+                Files.walkFileTree(reportFile.toPath(), new SimpleFileVisitor<Path>() {
+                    @Override
+                    public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                        Files.delete(file);
+                        return FileVisitResult.CONTINUE;
+                    }
 
-                @Override
-                public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-                    Files.delete(dir);
-                    return FileVisitResult.CONTINUE;
-                }
-            });
-        } catch (IOException e) {
-            logger.error(e.getMessage());
+                    @Override
+                    public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                        Files.delete(dir);
+                        return FileVisitResult.CONTINUE;
+                    }
+                });
+            } catch (IOException e) {
+                logger.error(e.getMessage());
+            }
         }
 
         logger.info("generating report");
@@ -43,10 +46,10 @@ public class BenchmarkReportWriter {
 
     public void copyStaticFile() {
         try {
-            Files.walkFileTree(new File("html").toPath(), new SimpleFileVisitor<Path>() {
+            Files.walkFileTree(new File("res/html").toPath(), new SimpleFileVisitor<Path>() {
                 @Override
                 public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-                    if (dir.getNameCount() > 1) {  // directory depth > 1
+                    if (dir.getNameCount() > 2) {  // directory depth > 2, excluding html dir
                         Files.createDirectory(Paths.get("report", dir.getFileName().toString()));
                     }
                     return FileVisitResult.CONTINUE;
@@ -54,7 +57,7 @@ public class BenchmarkReportWriter {
 
                 @Override
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                    if (file.getNameCount() > 2) {  // file depth > 2
+                    if (file.getNameCount() > 3) {  // file depth > 2, excluding index.html
                         Files.copy(file, Paths.get("report", file.getName(file.getNameCount() - 2).toString(), file.getName(file.getNameCount() - 1).toString()));
                     }else {
                         Files.copy(file, Paths.get("report", file.getName(file.getNameCount() - 1).toString()));

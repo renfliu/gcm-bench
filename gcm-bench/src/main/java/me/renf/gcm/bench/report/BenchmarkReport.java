@@ -39,7 +39,7 @@ public class BenchmarkReport {
         context.setVariable("summary", summary);
         try {
             FileWriter writer = new FileWriter(new File(output));
-            templateEngine.process("html/index.html", context, writer);
+            templateEngine.process("tpl/index.html", context, writer);
             writer.close();
         } catch (IOException e) {
             throw new BenchmarkLoadException("generate report error! " + e.getMessage());

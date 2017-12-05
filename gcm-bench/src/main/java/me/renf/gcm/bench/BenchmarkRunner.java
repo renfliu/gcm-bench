@@ -34,49 +34,52 @@ public class BenchmarkRunner {
         // data generate
         if (conf.isGenerate()) {
             // FIXME: delete comment //
-            //genData();  // just for test
+            genData();  // just for test
         }
 
-        // start monitor
-        monitor.start();
         BenchmarkResult result = new BenchmarkResult();
-        result.setStartTime(System.currentTimeMillis());
+        try {
+            // start monitor
+            monitor.start();
+            result.setStartTime(System.currentTimeMillis());
 
-        // initial platform
-        logger.info(conf.getType() + " platform is initializing.");
-        platform.init();
-        logger.info(conf.getType() + " platform initialized successfully");
+            // initial platform
+            logger.info(conf.getType() + " platform is initializing.");
+            platform.init();
+            logger.info(conf.getType() + " platform initialized successfully");
 
-        // load dataset
-        logger.info("load dataset:" + conf.getDataset());
-        LoadResult loadResult = runLoad();
-        result.setLoadResult(loadResult);
-        logger.info("load dataset successfully");
+            // load dataset
+            logger.info("load dataset:" + conf.getDataset());
+            LoadResult loadResult = runLoad();
+            result.setLoadResult(loadResult);
+            logger.info("load dataset successfully");
 
-        // load query
-        logger.info("load query job");
-        platform.loadJob();
-        logger.info(platform.getJobSize() + " jobs have loaded");
+            // load query
+            logger.info("load query job");
+            platform.loadJob();
+            logger.info(platform.getJobSize() + " jobs have loaded");
 
-        // execute query
-        logger.info("start to execute SPARQL test");
-        List<QueryResult> queryResults = runQuery();
-        result.setQueryResults(queryResults);
-        logger.info("SPARQL test over");
+            // execute query
+            logger.info("start to execute SPARQL test");
+            List<QueryResult> queryResults = runQuery();
+            result.setQueryResults(queryResults);
+            logger.info("SPARQL test over");
 
-        // unload dataset
-        logger.info("unload dataset");
-        platform.unload();
+            // unload dataset
+            logger.info("unload dataset");
+            platform.unload();
 
-        // platform exit
-        platform.exit();
-        logger.info(conf.getType() + " platform exited");
+            // platform exit
+            platform.exit();
+            logger.info(conf.getType() + " platform exited");
 
-        // monitoring data collect
-        monitor.stop();
-        result.setEndTime(System.currentTimeMillis());
-        result = monitor.addMonitorInfo(result);
-
+            // monitoring data collect
+            monitor.stop();
+            result.setEndTime(System.currentTimeMillis());
+            result = monitor.addMonitorInfo(result);
+        } finally {
+            monitor.stop();
+        }
         return result;
     }
 

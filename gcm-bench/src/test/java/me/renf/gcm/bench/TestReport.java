@@ -16,7 +16,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class TestReport {
     public static void main(String[] args) {
@@ -33,12 +32,12 @@ public class TestReport {
         Context context = new Context();
         context.setVariable("name", "world");
         StringWriter stringWriter = new StringWriter();
-        templateEngine.process("html/index.html", context, stringWriter);
+        templateEngine.process("tpl/index.html", context, stringWriter);
         System.out.println(stringWriter.toString());
     }
 
     public static void testPath() {
-        Path p = Paths.get("html/js/report/fdsafd/fdsa");
+        Path p = Paths.get("res/html/js/report/fdsafd/fdsa");
         System.out.println(p.getName(p.getNameCount()-1));
     }
 

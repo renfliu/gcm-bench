@@ -27,6 +27,9 @@ public class GStorePlatform extends Platform{
             GstoreConf gstoreConf = new GstoreConf();
             gstoreConf.loadFromFile();
             gc = new GstoreConnector(gstoreConf.getIp(), gstoreConf.getPort());
+            if (!gc.test()) {
+                throw new BenchmarkLoadException("GStore连接失败");
+            }
         } catch (IOException e) {
             throw new BenchmarkLoadException("读取配置文件出错: " + e.getMessage());
         }
