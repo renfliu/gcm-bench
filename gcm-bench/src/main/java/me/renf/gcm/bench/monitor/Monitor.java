@@ -22,11 +22,13 @@ public class Monitor {
     private static final Logger logger = LoggerFactory.getLogger(Monitor.class);
     private BenchConf conf;
     private boolean isMonitor;
+    private boolean isStopped;
     private Sigar sigar;
 
     public Monitor(BenchConf conf) {
         this.conf = conf;
         isMonitor = false;
+        isStopped = true;
         sigar = initSigar();
 
         File parentDir = new File(CPU_FILE).getParentFile();
@@ -62,6 +64,8 @@ public class Monitor {
     public boolean isMonitor() {
         return isMonitor;
     }
+
+    public boolean isStopped() { return isStopped; }
 
     public BenchmarkResult addMonitorInfo(BenchmarkResult result) {
         MonitorInfo monitorInfo = createMonitorInfo(result.getStartTime(), result.getEndTime());
@@ -166,6 +170,7 @@ public class Monitor {
             @Override
             public void run() {
                 try {
+                    isStopped = false;
                     File cpuFile = new File(CPU_FILE);
                     File memFile = new File(MEM_FILE);
                     FileWriter cpuWriter = new FileWriter(cpuFile);
@@ -192,6 +197,8 @@ public class Monitor {
                 } catch (IOException e) {
                     e.printStackTrace();
                     logger.error(e.getMessage());
+                } finally {
+                    isStopped = true;
                 }
             }
         }).start();

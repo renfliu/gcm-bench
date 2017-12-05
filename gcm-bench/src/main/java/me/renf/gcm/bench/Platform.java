@@ -84,25 +84,19 @@ abstract public class Platform {
     abstract public void exit();
 
     private List<QueryJob> getQueryFromFile() {
-        List<QueryJob> querys = new ArrayList<>();
-
+        List<QueryJob> queries = new ArrayList<>();
         try {
-            InputStream queryInput;
-            if (conf.isGenerate()) {
-                queryInput = this.getClass().getClassLoader().getResourceAsStream("query/query.sql");
-            }else {
-                queryInput = new FileInputStream(new File(conf.getSparql()));
-            }
+            InputStream queryInput = new FileInputStream(new File(conf.getSparql()));
             BufferedReader reader = new BufferedReader(new InputStreamReader(queryInput));
-            String line;
             StringBuilder queryBuilder = new StringBuilder();
+            String line;
             while((line = reader.readLine()) != null) {
                 if (line.trim().startsWith("#")) {
                     // step over this line
                 } else if (line.isEmpty()) {
                     if (queryBuilder.length() > 0 ) {
                         QueryJob query = new QueryJob(queryBuilder.toString());
-                        querys.add(query);
+                        queries.add(query);
                     }
                     queryBuilder.setLength(0);
                 } else {
@@ -110,9 +104,12 @@ abstract public class Platform {
                     queryBuilder.append("\n");
                 }
             }
+            if (queryBuilder.length() > 0) {
+                queries.add(new QueryJob(queryBuilder.toString()));
+            }
         } catch (IOException e) {
             throw new BenchmarkLoadException(e.getMessage());
         }
-        return querys;
+        return queries;
     }
 }

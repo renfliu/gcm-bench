@@ -33,8 +33,7 @@ public class BenchmarkRunner {
     public BenchmarkResult execute() {
         // data generate
         if (conf.isGenerate()) {
-            // FIXME: delete comment //
-            genData();  // just for test
+            genData();
         }
 
         BenchmarkResult result = new BenchmarkResult();
@@ -63,7 +62,7 @@ public class BenchmarkRunner {
             logger.info("start to execute SPARQL test");
             List<QueryResult> queryResults = runQuery();
             result.setQueryResults(queryResults);
-            logger.info("SPARQL test over");
+            logger.info("SPARQL test is over");
 
             // unload dataset
             logger.info("unload dataset");
@@ -71,15 +70,22 @@ public class BenchmarkRunner {
 
             // platform exit
             platform.exit();
-            logger.info(conf.getType() + " platform exited");
+            logger.info(conf.getType() + " platform has exited");
 
             // monitoring data collect
             monitor.stop();
             result.setEndTime(System.currentTimeMillis());
-            result = monitor.addMonitorInfo(result);
         } finally {
-            monitor.stop();
+            while (!monitor.isStopped()) {
+                monitor.stop();
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    // do nothing
+                }
+            }
         }
+        result = monitor.addMonitorInfo(result);
         return result;
     }
 
@@ -126,7 +132,7 @@ public class BenchmarkRunner {
             queryResult.setResult(answer);
             queryResult.setEndTime(System.currentTimeMillis());
             queryResults.add(queryResult);
-            logger.info("job " + queryNumber + " over");
+            logger.info("job " + queryNumber + " is over");
 
             try {
                 // gstore connection reset

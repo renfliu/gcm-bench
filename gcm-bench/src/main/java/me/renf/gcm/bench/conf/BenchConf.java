@@ -37,9 +37,9 @@ public class BenchConf {
         setGenerate(Boolean.valueOf(properties.getProperty("dataGenerate", "true")));
         setDataset(properties.getProperty("dataset", "data.n3"));
         setType(properties.getProperty("benchType", "gstore"));
+        setSparql(properties.getProperty("sparql", "res/query/query.sql"));
         if (!isGenerate()) {
             setDataset(properties.getProperty("benchData", "data.n3"));
-            setSparql(properties.getProperty("sparql", "query.sql"));
         }
         try {
             // the ratio of the generated entity

@@ -97,7 +97,7 @@ public class HtmlBenchmarkReportGenerator implements BenchmarkReportGenerator{
         for (QueryResult queryResult : benchResult.getQueryResults()) {
             MonitorInfo queryInfo = queryResult.getMonitorInfo();
             Map<String, String> query = new LinkedHashMap<>();
-            query.put("time", String.valueOf((queryResult.getEndTime()-queryResult.getStartTime())/1000.0)+"s");
+            query.put("time", String.valueOf(queryResult.getEndTime()-queryResult.getStartTime())+"ms");
             query.put("startTime", dateFormat.format(new Date(queryResult.getStartTime())));
             query.put("endTime", dateFormat.format(new Date(queryResult.getEndTime())));
             query.put("description", "");
