@@ -3,62 +3,62 @@ package me.renf.gcm.generator.random;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
 import java.util.Random;
 
 public class NameGenerator implements RandomGenerator{
-    private final String nameFilePath = "res/name.txt";
+    private static final String nameFilePath = "res/name.txt";
     private Random rand;
-    private final Logger logger = LoggerFactory.getLogger(NameGenerator.class);
-    private BufferedReader reader;
+    private static final Logger logger = LoggerFactory.getLogger(NameGenerator.class);
+    private static char[] nameArray;
+    private int curIndex;
+
+    static {
+        File file = new File(nameFilePath);
+        Long fileLength = file.length();
+        byte[] contents = new byte[fileLength.intValue()];
+        try {
+            FileInputStream in = new FileInputStream(file);
+            in.read(contents);
+            in.close();
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+        }
+
+        Charset utf8 = Charset.forName("UTF-8");
+        ByteBuffer bb = ByteBuffer.allocate(contents.length);
+        bb.put(contents);
+        bb.flip();
+        CharBuffer cb = utf8.decode(bb);
+        nameArray = cb.array();
+    }
 
     public NameGenerator() {
         rand = new Random();
-        try {
-            reader = new BufferedReader(new FileReader(new File(nameFilePath)));
-        }catch (FileNotFoundException e){
-            logger.error(e.getMessage());
-        }
+        curIndex = 0;
     }
 
     public String next() {
-        try {
-            int nameLength = rand.nextInt(10) + 5;
-            char[] names = new char[nameLength];
-            int r = reader.read(names);
-            if (r == -1) {
-                reset();
-                reader.read(names);
-            }
-            return String.valueOf(names);
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
-        return "";
+        return next(10);
     }
 
     public String next(int bound) {
-        try {
-            int nameLength = rand.nextInt(bound) + 10;
-            char[] names = new char[nameLength];
-            int r = reader.read(names);
-            if (r == -1) {
-                reset();
-                reader.read(names);
+        int nameLength = rand.nextInt(bound) + 5;
+        char[] names = new char[nameLength];
+        for (int i = 0; i < nameLength; i++) {
+            if (curIndex < nameArray.length-2) {
+                names[i] = nameArray[curIndex++];
+            }else {
+                names[i] = ' ';
+                curIndex = 0;
             }
-            return String.valueOf(names);
-        } catch (IOException e) {
-            logger.error(e.getMessage());
         }
-        return "";
-    }
-
-    private void reset() {
-        try {
-            reader.close();
-            reader = new BufferedReader(new FileReader(new File(nameFilePath)));
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
+        return String.valueOf(names);
     }
 }

@@ -20,7 +20,7 @@ public class GCMBench {
     public static void main(String[] args){
         // load configuration
         BenchConf conf = loadConfiguration();
-        // initial platform
+        // initialize platform
         Platform platform = loadPlatform(conf);
         // run benchmark
         Monitor monitor = new Monitor(conf);
