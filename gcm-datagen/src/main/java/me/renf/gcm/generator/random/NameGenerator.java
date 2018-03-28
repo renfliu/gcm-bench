@@ -7,6 +7,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
@@ -34,7 +35,7 @@ public class NameGenerator implements RandomGenerator{
         Charset utf8 = Charset.forName("UTF-8");
         ByteBuffer bb = ByteBuffer.allocate(contents.length);
         bb.put(contents);
-        bb.flip();
+        ((Buffer)bb).flip();
         CharBuffer cb = utf8.decode(bb);
         nameArray = cb.array();
     }
