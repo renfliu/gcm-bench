@@ -18,17 +18,19 @@ public class EnzymeNode extends OntologyNode implements NodeGenerator{
     private RandomGenerator pathwayGenerator;
     private RandomGenerator classGenerator;
     private RandomGenerator geneGenerator;
-    private RandomGenerator nameGenerator;
+    private RandomGenerator stringGenerator;
     private RandomGenerator idGenerator;
+    private NameGenerator enzymeNameGenerator;
     private Random rand;
 
     public EnzymeNode(GenConfig config) {
         super(config);
         nodes = config.getEnzymeLines() / AVG_NODE_LINE;
         pathwayGenerator = new PathwayIDGenerator(nodes);
-        classGenerator = new NameGenerator();
+        classGenerator = new StringGenerator();
         geneGenerator = new KeggGeneGenerator();
-        nameGenerator = new NameGenerator();
+        stringGenerator = new StringGenerator();
+        enzymeNameGenerator = new NameGenerator(NameGenerator.ENZYME);
         rand = new Random(nodes);
     }
 
@@ -58,6 +60,7 @@ public class EnzymeNode extends OntologyNode implements NodeGenerator{
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
+        enzymeNameGenerator.unload();
     }
 
     private String getID() {
@@ -108,7 +111,7 @@ public class EnzymeNode extends OntologyNode implements NodeGenerator{
         int n = (int)(20 - 1.67*(Math.log(r) / Math.log(2)));
         for (int i = 0; i < n; i++) {
             String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/enzyme/%s> <http://gcm.wdcm.org/ontology/" +
-                    "gcmAnnotation/v1/otherName> \"%s\" .", id, nameGenerator.next());
+                    "gcmAnnotation/v1/otherName> \"%s\" .", id, stringGenerator.next());
             writer.write(axiom + "\n");
         }
     }
@@ -118,7 +121,7 @@ public class EnzymeNode extends OntologyNode implements NodeGenerator{
         int n = (int)(7 - 0.57*(Math.log(r) / Math.log(2)) + 0.7);
         for (int i = 0; i < n; i++) {
             String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/enzyme/%s> <http://gcm.wdcm.org/ontology/" +
-                    "gcmAnnotation/v1/product> \"%s\" .", id, nameGenerator.next());
+                    "gcmAnnotation/v1/product> \"%s\" .", id, stringGenerator.next());
             writer.write(axiom + "\n");
         }
     }
@@ -128,7 +131,7 @@ public class EnzymeNode extends OntologyNode implements NodeGenerator{
         int n = (int)(7 - 0.57*(Math.log(r) / Math.log(2)) + 0.7);
         for (int i = 0; i < n; i++) {
             String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/enzyme/%s> <http://gcm.wdcm.org/ontology/" +
-                    "gcmAnnotation/v1/substrate> \"%s\" .", id, nameGenerator.next());
+                    "gcmAnnotation/v1/substrate> \"%s\" .", id, stringGenerator.next());
             writer.write(axiom + "\n");
         }
     }
@@ -137,7 +140,7 @@ public class EnzymeNode extends OntologyNode implements NodeGenerator{
         int r = rand.nextInt(10);
         if (r > 2) {
             writer.write(String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/enzyme/%s> <http://gcm.wdcm.org/ontology/" +
-                    "gcmAnnotation/v1/sysname> \"%s\" .\n", id, nameGenerator.next()));
+                    "gcmAnnotation/v1/sysname> \"%s\" .\n", id, stringGenerator.next()));
         }
     }
 
@@ -145,7 +148,7 @@ public class EnzymeNode extends OntologyNode implements NodeGenerator{
         int r = rand.nextInt(10);
         if (r > 2) {
             writer.write(String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/enzyme/%s> <http://gcm.wdcm.org/ontology/" +
-                    "gcmAnnotation/v1/name> \"%s\" .\n", id, nameGenerator.next()));
+                    "gcmAnnotation/v1/name> \"%s\" .\n", id, enzymeNameGenerator.next()));
         }
     }
 
@@ -159,13 +162,15 @@ public class EnzymeNode extends OntologyNode implements NodeGenerator{
         int r = rand.nextInt(100);
         if (r > 12) {
             writer.write(String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/enzyme/%s> <http://gcm.wdcm.org/ontology/" +
-                    "gcmAnnotation/v1/description> \"%s\" .\n", id, nameGenerator.next()));
+                    "gcmAnnotation/v1/description> \"%s\" .\n", id, stringGenerator.next()));
         }
     }
 
     private void writeHistoryAxiom(String id, DataWriter writer) throws IOException{
+        String history = String.format("EC %d.%d.%d.%d created %d", rand.nextInt(4)+1, rand.nextInt(9)+1,
+                rand.nextInt(9)+1, rand.nextInt(99)+1, rand.nextInt(40)+1970);
         String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/enzyme/%s> <http://gcm.wdcm.org/ontology/" +
-                "gcmAnnotation/v1/history> \"%s\" .", id, nameGenerator.next());
+                "gcmAnnotation/v1/history> \"%s\" .", id, history);
         writer.write(axiom + "\n");
     }
 }

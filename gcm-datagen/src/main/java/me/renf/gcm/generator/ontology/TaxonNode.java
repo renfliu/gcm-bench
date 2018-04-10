@@ -61,18 +61,14 @@ public class TaxonNode implements NodeGenerator {
     private String getAncestorAndParentTaxIDAxiom(String id) {
         int curID = Integer.valueOf(id);
         StringBuilder sb = new StringBuilder();
-        int parentID = rand.nextInt(curID);
-        if (parentID > 0) {
-            sb.append(String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/%s> <http://gcm.wdcm.org/ontology/" +
-                    "gcmAnnotation/v1/parentTaxid> <http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/%s> .", id, parentID));
-            sb.append("\n");
-            int ancestorID = rand.nextInt(parentID);
-            if (ancestorID > 0) {
-                sb.append(String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/%s> <http://gcm.wdcm.org/ontology/" +
-                        "gcmAnnotation/v1/ancestorTaxid> <http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/%s> .", id, ancestorID));
-                sb.append("\n");
-            }
-        }
+        int parentID = rand.nextInt(curID/2+1)+1;
+        sb.append(String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/%s> <http://gcm.wdcm.org/ontology/" +
+                "gcmAnnotation/v1/parentTaxid> <http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/%s> .", id, parentID));
+        sb.append("\n");
+        int ancestorID = rand.nextInt(parentID/2+1)+1;
+        sb.append(String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/%s> <http://gcm.wdcm.org/ontology/" +
+                "gcmAnnotation/v1/ancestorTaxid> <http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/%s> .", id, ancestorID));
+        sb.append("\n");
         return sb.toString();
     }
 

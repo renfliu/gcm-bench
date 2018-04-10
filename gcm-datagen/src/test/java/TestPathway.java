@@ -1,7 +1,7 @@
 import me.renf.gcm.generator.GenConfig;
 import me.renf.gcm.generator.ontology.PathwayNode;
 import me.renf.gcm.generator.random.IDGenerator;
-import me.renf.gcm.generator.random.NameGenerator;
+import me.renf.gcm.generator.random.StringGenerator;
 import me.renf.gcm.generator.random.PathwayIDGenerator;
 import me.renf.gcm.generator.random.RandomGenerator;
 
@@ -30,7 +30,7 @@ public class TestPathway {
     }
 
     public static void testNameGenerator() throws IOException {
-        RandomGenerator generator = new NameGenerator();
+        RandomGenerator generator = new StringGenerator();
         for (int i = 0; i < 100; i++) {
             System.out.println(generator.next());
         }

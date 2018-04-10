@@ -1,10 +1,11 @@
 import me.renf.gcm.generator.GenConfig;
 import me.renf.gcm.generator.ontology.EnzymeNode;
 import me.renf.gcm.generator.random.EnzymeIDGenertor;
+import me.renf.gcm.generator.random.NameGenerator;
 
 public class TestEnzyme {
     public static  void main(String[] args) throws Exception{
-        testEnzyme();
+        //testEnzyme();
         //testEnzymeIDGenerator();
     }
 
@@ -22,4 +23,5 @@ public class TestEnzyme {
             System.out.println(i);
         }
     }
+
 }

@@ -1,6 +1,7 @@
 package me.renf.gcm.generator.ontology;
 
 import me.renf.gcm.generator.random.NameGenerator;
+import me.renf.gcm.generator.random.StringGenerator;
 import me.renf.gcm.generator.random.RandomGenerator;
 import me.renf.gcm.generator.random.TaxonIDGenerator;
 import org.slf4j.Logger;
@@ -12,13 +13,15 @@ import java.util.Random;
 
 public class TaxonName implements RandomGenerator{
     final Logger logger = LoggerFactory.getLogger(RandomGenerator.class);
-    private RandomGenerator nameGenerator;
+    private RandomGenerator stringGenerator;
     private RandomGenerator idGenerator;
+    private NameGenerator nameGenerator;
     private Random rand;
 
     public TaxonName() {
-        nameGenerator = new NameGenerator();
+        stringGenerator = new StringGenerator();
         idGenerator = new TaxonIDGenerator();
+        nameGenerator = new NameGenerator(NameGenerator.TAX);
         rand = new Random();
     }
 
@@ -37,7 +40,7 @@ public class TaxonName implements RandomGenerator{
         int r = rand.nextInt(100);
         String[] nameClasses = {"scientificName", "genbankCommonName", "equivalentName", "synonymName", "misnomerName", "includesName",
                 "authorityName", "typeMaterialName", "blastName", "commonName", "misspellingName", "genbankSynonym" };
-        return String.format("%s:%s:%s", idGenerator.next(), nameClasses[r%nameClasses.length], getMD5(nameGenerator.next()));
+        return String.format("%s:%s:%s", idGenerator.next(), nameClasses[r%nameClasses.length], getMD5(stringGenerator.next()));
     }
 
     private String getTaxIDAxiom(String id) {

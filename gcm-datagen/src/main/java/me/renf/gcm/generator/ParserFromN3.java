@@ -34,7 +34,7 @@ public class ParserFromN3 {
     private OWLOntology load(OWLOntologyManager manager) {
         try {
             String filePath  = ParserFromN3.class.getClassLoader().getResource(filename).getPath();
-            return manager.loadOntologyFromOntologyDocument(new File("/home/renf/data/gstore/obo.n3"));
+            return manager.loadOntologyFromOntologyDocument(new File(filePath));
         }catch (OWLOntologyCreationException e) {
             e.printStackTrace();
         }

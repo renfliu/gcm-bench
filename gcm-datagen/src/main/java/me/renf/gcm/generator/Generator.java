@@ -109,30 +109,35 @@ public class Generator {
             // 写入pathway数据
             PathwayNode pathwayNode = new PathwayNode(config);
             pathwayNode.generate();
+            System.out.println("pathway written");
 
             // 写入obo数据
 
             // 写入enzyme数据
             EnzymeNode enzymeNode = new EnzymeNode(config);
             enzymeNode.generate();
+            System.out.println("enzyme written");
 
             // 写入taxonomy数据
             TaxonNode taxonNode = new TaxonNode(config);
             taxonNode.generate();
+            System.out.println("taxonomy written");
 
             // 写入protein数据
             ProteinNode proteinNode = new ProteinNode(config);
             proteinNode.generate();
+            System.out.println("protein written");
 
             // 写入gene数据
             GeneNode geneNode = new GeneNode(config);
             geneNode.generate();
+            System.out.println("gene written");
 
             writer.close();
         }catch (Exception e) {
             e.printStackTrace();
         }
 
-        return "数据生成成功";
+        return "finished";
     }
 }

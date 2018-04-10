@@ -4,7 +4,7 @@ import me.renf.gcm.generator.GenConfig;
 import me.renf.gcm.generator.exceptions.WriterException;
 import me.renf.gcm.generator.output.DataWriter;
 import me.renf.gcm.generator.output.DataWriterFactory;
-import me.renf.gcm.generator.random.NameGenerator;
+import me.renf.gcm.generator.random.StringGenerator;
 import me.renf.gcm.generator.random.ProteinIDGenerator;
 import me.renf.gcm.generator.random.TaxonIDGenerator;
 import org.slf4j.Logger;
@@ -23,7 +23,7 @@ public class ProteinNode implements NodeGenerator{
     private PfamNode pfam = new PfamNode();
     private ProteinIDGenerator idGenerator;
     private TaxonIDGenerator taxonIDGenerator = new TaxonIDGenerator();
-    private NameGenerator nameGenerator = new NameGenerator();
+    private StringGenerator stringGenerator = new StringGenerator();
     private int go_id;
 
 
@@ -186,7 +186,7 @@ public class ProteinNode implements NodeGenerator{
 
     private String getSequenceLengthAxiom(String id) {
         String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/protein/%s> <http://gcm.wdcm.org/ontology/" +
-                "gcmAnnotation/v1/sequenceLength> \"%s\" .", id, getSequenceLength());
+                "gcmAnnotation/v1/sequenceLength> %s .", id, getSequenceLength());
         return axiom + "\n";
     }
 
@@ -198,13 +198,13 @@ public class ProteinNode implements NodeGenerator{
 
     private String getDescriptionAxiom(String id) {
         String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/protein/%s> <http://gcm.wdcm.org/ontology/" +
-                "gcmAnnotation/v1/description> \"%s\" .", id, nameGenerator.next(100));
+                "gcmAnnotation/v1/description> \"%s\" .", id, stringGenerator.next(100));
         return axiom + "\n";
     }
 
     private String getFunctionAxiom(String id) {
         String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/protein/%s> <http://gcm.wdcm.org/ontology/" +
-                "gcmAnnotation/v1/function> \"%s\" .", id, nameGenerator.next(100));
+                "gcmAnnotation/v1/function> \"%s\" .", id, stringGenerator.next(100));
         return axiom + "\n";
     }
 

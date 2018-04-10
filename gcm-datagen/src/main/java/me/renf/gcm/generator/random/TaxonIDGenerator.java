@@ -12,7 +12,7 @@ public class TaxonIDGenerator implements RandomGenerator{
     }
 
     public TaxonIDGenerator(long m) {
-        max = m;
+        max = m > 1000? m : 1000;
         current = 1;
         rand = new Random(max);
     }

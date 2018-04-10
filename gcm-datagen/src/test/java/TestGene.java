@@ -5,11 +5,13 @@ import me.renf.gcm.generator.ontology.GenomeNode;
 public class TestGene {
     public static void main(String[] args) throws Exception{
         //testGenome();
+        long start = System.currentTimeMillis();
         testGene();
+        System.out.print("time:" + (System.currentTimeMillis() - start));
     }
 
     public static void testGene() throws Exception {
-        String[] args = {"-o", "enzyme", "-n", "1000000"};
+        String[] args = {"-o", "enzyme", "-n", "10000"};
         GenConfig config = new GenConfig(args);
         GeneNode gene = new GeneNode(config);
         gene.generate();

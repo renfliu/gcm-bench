@@ -2,6 +2,7 @@
 # 简单的SPARQL查询，只有WHERE语句，结果为星型结构
 # 获取Enzyme数据
 # 测试结果通过
+# 已通过Jena验证
 PREFIX anno:<http://gcm.wdcm.org/ontology/gcmAnnotation/v1/>
 PREFIX taxon:<http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/>
 PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -19,10 +20,88 @@ WHERE {
 LIMIT 100
 
 
+# Query 1.1
+# 简单的SPARQL查询，只有WHERE语句，结果为雪花结构
+# 获取与Gene相关的数据
+# 已通过Jena验证
+PREFIX anno:<http://gcm.wdcm.org/ontology/gcmAnnotation/v1/>
+PREFIX taxon:<http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/>
+PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+SELECT DISTINCT *
+WHERE {
+    ?gene rdf:type anno:GeneNode;
+          anno:x-taxon ?taxon;
+          anno:x-pathway ?pathway;
+          anno:x-genome ?genome;
+          anno:x-protein ?protein.
+    ?taxon rdf:type anno:TaxonNode;
+           anno:nodeRank ?taxonRank;
+           anno:parentTaxid ?taxonParent.
+    ?pathway rdf:type anno:PathwayNode;
+                 anno:organism ?pathwayOrganism.
+    ?genome rdf:type anno:GenomeNode;
+            anno:definition ?genomeDefinition;
+            anno:x-taxon ?genomeTaxon;
+            anno:accession ?genomeAccession.
+    ?protein rdf:type anno:ProteinNode;
+             anno:x-taxon ?proteinTaxon;
+             anno:function ?proteinFuntion;
+             anno:sequenceLength ?proteinLength.
+}
+LIMIT 100
+
+
+# Query 1.3
+# 简单的SPARQL查询
+# 已通过Jena验证
+PREFIX anno:<http://gcm.wdcm.org/ontology/gcmAnnotation/v1/>
+PREFIX taxon:<http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/>
+PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+SELECT DISTINCT *
+WHERE {
+    ?gene rdf:type anno:GeneNode;
+          anno:geneType "snRNA";
+          anno:x-taxon ?taxon;
+          anno:x-genome ?genome.
+    ?taxon rdf:type anno:TaxonNode;
+           anno:nodeRank "species";
+           anno:parentTaxid ?taxonParent.
+    ?genome rdf:type anno:GenomeNode;
+            anno:definition ?genomeDefinition;
+            anno:x-taxon ?genomeTaxon;
+            anno:accession ?genomeAccession.
+}
+LIMIT 100
+
+
+# Query 1.4
+# 简单的SPARQL查询，测试taxonmy的parentid这个循环join的性能
+# 已通过Jena验证
+PREFIX anno:<http://gcm.wdcm.org/ontology/gcmAnnotation/v1/>
+PREFIX taxon:<http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/>
+PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+SELECT DISTINCT ?t ?pid ?ppid ?pppid
+WHERE {
+    ?t rdf:type anno:TaxonNode;
+       anno:parentTaxid ?pid.
+    ?nameId anno:taxid ?t;
+            anno:nameclass 'scientificName';
+            anno:taxname ?p.
+    ?pid rdf:type anno:TaxonNode;
+         anno:parentTaxid ?ppid.
+    ?ppid rdf:type anno:TaxonNode;
+          anno:parentTaxid ?pppid.
+}
+LIMIT 10
+ORDER BY ?t
+
+
+
 # Query 2
 # 简单的SPARQL查询，只有WHERE语句，结果为雪花结构
 # 获取与Gene相关的数据
 # 结果太多，需要再完善
+# Jena可以，但gStore好像不行
 PREFIX anno:<http://gcm.wdcm.org/ontology/gcmAnnotation/v1/>
 PREFIX taxon:<http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/>
 PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -39,7 +118,7 @@ WHERE {
                  anno:organism ?pathwayOrganism.
     ?genome rdf:type anno:GenomeNode;
             anno:definition ?genomeDefinition;
-            anno:x-taoxn ?genomeTaxon;
+            anno:x-taxon ?genomeTaxon;
             anno:accession ?genomeAccession.
     OPTIONAL {
         ?gene anno:x-protein ?protein.
@@ -56,19 +135,20 @@ LIMIT 100
 # 带UNION的SPARQL查询
 # 获取Taxonomy的信息、
 # 通过测试，但是id的数字需要统一下
+# 通过Jena测试
 PREFIX anno:<http://gcm.wdcm.org/ontology/gcmAnnotation/v1/>
 PREFIX taxon:<http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/>
 PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 SELECT DISTINCT *
 WHERE {
     {
-        ?taxonId anno:ancestorTaxid taxon:399171;
+        ?taxonId anno:ancestorTaxid taxon:11171;
                  anno:nodeRank ?rank.
         ?nameId anno:taxid ?taxonid;
                 anno:nameclass 'scientificName';
                 anno:taxname ?name.
     } UNION {
-        ?nameId anno:taxid taxon:399171;
+        ?nameId anno:taxid taxon:11171;
                 anno:nameclass 'scientificName';
                 anno:taxname ?name.
     }
@@ -78,6 +158,7 @@ LIMIT 100
 # Query 4
 # 测试SPARQL中的FILTER
 # 获取gene数据和enzyme数据
+# Jena测试通过, 名字分需要改
 PREFIX anno:<http://gcm.wdcm.org/ontology/gcmAnnotation/v1/>
 PREFIX gene:<http://gcm.wdcm.org/ontology/gcmAnnotation/v1/gene/>
 PREFIX enzyme:<http://gcm.wdcm.org/data/gcmAnnotation1/enzyme/>
@@ -87,32 +168,17 @@ WHERE {
     ?geneId rdf:type anno:GeneNode;
             anno:geneProduct ?product;
             anno:x-taxon ?taxon.
-    FILTER reget(str(?))
+    FILTER regex(str(?product), "Methanos", 'i').
     ?taxon rdf:type anno:TaxonNode;
-                      anno:nodeRank ?rank.
+                    anno:nodeRank ?rank.
     FILTER regex(str(?rank), "order", 'i').
 }
 LIMIT 100
-# gene 没有与enzyme相连，没有product，废弃
-#PREFIX anno:<http://gcm.wdcm.org/ontology/gcmAnnotation/v1/>
-#PREFIX gene:<http://gcm.wdcm.org/ontology/gcmAnnotation/v1/gene/>
-#PREFIX enzyme:<http://gcm.wdcm.org/data/gcmAnnotation1/enzyme/>
-#PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-#SELECT DISTINCT *
-#WHERE {
-#    ?geneId rdf:type anno:GeneNode;
-#            anno:x-enzyme enzyme:%enzymeID%;
-#            anno:geneProduct ?product.
-#    FILTER regex(str(?product), "Cellulose", 'i').
-#    enzyme:%enzymeID% rdf:type anno:EnzymeNode;
-#                      anno:product ?enzymeProduct.
-#    FILTER regex(str(?enzymeProduct), "diphosphate", 'i').
-#}
 
 # Query 5
 # 测试SPARQL的排序性能
 # 查找gene的数据，数量较大
-# 测试通过，需要检验数据量很大时的性能表现，在数据量很大时，可能出现结果太多，占用太多内存
+# Jena测试通过，需要检验数据量很大时的性能表现，在数据量很大时，可能出现结果太多，占用太多内存
 PREFIX anno:<http://gcm.wdcm.org/ontology/gcmAnnotation/v1/>
 PREFIX gene:<http://gcm.wdcm.org/ontology/gcmAnnotation/v1/gene/>
 PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -129,7 +195,7 @@ LIMIT 100
 # Query 6
 # 测试SPARQL的排序性能
 # 查找protein的数据
-# 通过测试， 数据较小，通过调整?length的长度来调整数量的大小，只能进行字符串的比较
+# Jena通过测试， 数据较小，通过调整?length的长度来调整数量的大小，只能进行字符串的比较
 PREFIX anno:<http://gcm.wdcm.org/ontology/gcmAnnotation/v1/>
 PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 SELECT DISTINCT *
@@ -152,31 +218,39 @@ WHERE {
     ?geneId rdf:type anno:GeneNode;
             anno:geneType "protein-coding".
 }
-LIMIT 100
+
 
 # Query 8
 # 测试aggregate函数的性能, max/min
 # 测试通过，gstore只支持count
 PREFIX anno:<http://gcm.wdcm.org/ontology/gcmAnnotation/v1/>
 PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-SELECT DISTINCT (max(?geneId) as ?max)
+SELECT DISTINCT (max(?geneId) as ?max) (min(?geneId) as ?min)
 WHERE {
     ?geneId rdf:type anno:GeneNode;
             anno:geneType "protein-coding".
 }
-LIMIT 100
+
 
 # Query 9
-# 测试aggregate函数的性能, avg
+# 测试aggregate函数的性能, avg, sum
 # 数据中不存在整数类型
-#PREFIX anno:<http://gcm.wdcm.org/ontology/gcmAnnotation/v1/>
-#PREFIX gene:<http://gcm.wdcm.org/data/gcmAnnotation1/gene/>
-#PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-#SELECT DISTINCT (avg(?geneId) as ?avg)
-#WHERE {
-#    ?geneId rdf:type anno:GeneType;
-#            anno:geneType "protein-coding".
-#}
+PREFIX anno:<http://gcm.wdcm.org/ontology/gcmAnnotation/v1/>
+PREFIX gene:<http://gcm.wdcm.org/data/gcmAnnotation1/gene/>
+PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+SELECT (avg(?length) as ?avgLength) (sum(?length) as ?s)
+WHERE {
+    ?geneId rdf:type anno:GeneNode;
+            anno:x-genome ?genome;
+            anno:geneType ?geneType;
+            anno:x-protein ?proteinId.
+    OPTIONAL {
+        ?geneId anno:chromosome ?chromosome.
+    }
+    ?proteinId rdf:type anno:ProteinNode;
+               anno:sequenceLength ?length.
+}
+
 
 # Query 10
 # 综合性的测试
@@ -203,26 +277,27 @@ LIMIT 100
 # Query 11
 # 综合性的测试
 # 得到http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/1270上的和关联在其后代上的所有的taxonomy的相关信息，并对他们的'scientificName'进行限制（包含'2665'）
-# 测试通过
+# Jena测试通过,
+# ?name filter 函数里面的匹配需要更改一下，重写nameGenerator
 PREFIX anno:<http://gcm.wdcm.org/ontology/gcmAnnotation/v1/>
 PREFIX taxon:<http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/>
 PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 SELECT ?taxonid ?name ?rank
 WHERE {
     {
-        ?taxonid anno:ancestorTaxid taxon:5.
+        ?taxonid anno:ancestorTaxid taxon:5;
+                 anno:nodeRank ?rank.
         ?nameId anno:taxid ?taxonid;
                 anno:nameclass 'scientificName';
                 anno:taxname ?name.
-        ?taxonid anno:nodeRank ?rank.
-        FILTER(regex(?name, '5')||regex(?rank, '5'))
+        FILTER(regex(?name, '5')||regex(?rank, 'suborder'))
     } UNION {
         ?nameId anno:taxid taxon:5;
                 anno:nameclass 'scientificName';
                 anno:taxname ?name.
         taxon:5 anno:nodeRank ?rank.
         BIND(taxon:5 as ?taxonid)
-        FILTER(regex(?name, '5'))
+        FILTER(regex(?name, '5')||regex(?rank, 'suborder'))
     }
 }
 OFFSET 0 LIMIT 15
@@ -248,7 +323,7 @@ WHERE {
         OPTIONAL{
             ?genomeid anno:strain ?strain.
         }
-        FILTER((regex(?name, 'n'))||(regex(?genomeid, 'n'))||(regex(?description, 'n'))).
+        FILTER((regex(?name, 'n', 'i'))||(regex(?genomeid, 'YP'))).
     } UNION {
         ?nameId rdf:type anno:TaxonName;
                 anno:taxid taxon:5;
@@ -261,7 +336,7 @@ WHERE {
             ?genomeid anno:strain ?strain.
         }
         BIND(taxon:5 as ?taxonid)
-        FILTER((regex(?name, 'n'))||(regex(?genomeid, 'n'))||(regex(?description, 'n'))).
+        FILTER((regex(?name, 'n', 'i'))||(regex(?genomeid, 'YP'))).
     }
 }
 OFFSET 0 LIMIT 15
@@ -269,7 +344,8 @@ OFFSET 0 LIMIT 15
 # Query 13
 # 综合性测试
 # 获取关于gene的数据
-# 测试通过
+# Jena测试通过
+# 需要更改name的生成方式
 PREFIX anno:<http://gcm.wdcm.org/ontology/gcmAnnotation/v1/>
 PREFIX taxon:<http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/>
 PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -285,7 +361,8 @@ WHERE {
             ?geneId anno:chromosome ?chromosome.
         }
         ?enzymeId rdf:type anno:EnzymeNode;
-                  anno:class ?class;
+                  anno:class ?class.
+        FILTER(regex(?class, 'n', 'i')).
     } UNION {
         ?geneId rdf:type anno:GeneNode;
                 anno:x-genome ?genome;
@@ -297,6 +374,6 @@ WHERE {
         ?proteinId rdf:type anno:ProteinNode;
                    anno:sequenceLength ?length.
     }
-    FILTER ( (?length > "1") && (?length < "6")).
+    FILTER ((xsd:integer(?length) < 500)).
 }
 OFFSET 0 LIMIT 20

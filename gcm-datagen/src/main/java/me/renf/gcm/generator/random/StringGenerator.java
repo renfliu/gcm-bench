@@ -3,7 +3,6 @@ package me.renf.gcm.generator.random;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -13,12 +12,12 @@ import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.util.Random;
 
-public class NameGenerator implements RandomGenerator{
+public class StringGenerator implements RandomGenerator{
     private static final String nameFilePath = "res/name.txt";
-    private Random rand;
-    private static final Logger logger = LoggerFactory.getLogger(NameGenerator.class);
+    private static final Logger logger = LoggerFactory.getLogger(StringGenerator.class);
     private static char[] nameArray;
     private int curIndex;
+    private Random rand;
 
     static {
         File file = new File(nameFilePath);
@@ -40,10 +39,11 @@ public class NameGenerator implements RandomGenerator{
         nameArray = cb.array();
     }
 
-    public NameGenerator() {
+    public StringGenerator() {
         rand = new Random();
         curIndex = 0;
     }
+
 
     public String next() {
         return next(10);
@@ -62,4 +62,5 @@ public class NameGenerator implements RandomGenerator{
         }
         return String.valueOf(names);
     }
+
 }

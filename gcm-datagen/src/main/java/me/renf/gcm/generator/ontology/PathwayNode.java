@@ -4,10 +4,7 @@ import me.renf.gcm.generator.GenConfig;
 import me.renf.gcm.generator.exceptions.WriterException;
 import me.renf.gcm.generator.output.DataWriter;
 import me.renf.gcm.generator.output.DataWriterFactory;
-import me.renf.gcm.generator.random.IDGenerator;
-import me.renf.gcm.generator.random.NameGenerator;
-import me.renf.gcm.generator.random.PathwayIDGenerator;
-import me.renf.gcm.generator.random.RandomGenerator;
+import me.renf.gcm.generator.random.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,9 +17,10 @@ public class PathwayNode extends OntologyNode implements NodeGenerator{
     private long nodes;
     private long id;
     private RandomGenerator idGenerator;
-    private RandomGenerator nameGenerator;
+    private RandomGenerator stringGenerator;
     private RandomGenerator mapGenerator;
     private RandomGenerator keggGeneGenerator;
+    private NameGenerator pathwayNameGenerator;
     private Random random;
 
     public PathwayNode(GenConfig config) {
@@ -30,9 +28,10 @@ public class PathwayNode extends OntologyNode implements NodeGenerator{
         long lines = config.getPathwayLines();
         id = 0;
         nodes = lines / AVG_NODE_LINE;
-        nameGenerator = new NameGenerator();
+        stringGenerator = new StringGenerator();
         mapGenerator = new PathwayIDGenerator(nodes);
         keggGeneGenerator = new IDGenerator(9, 10000000);
+        pathwayNameGenerator = new NameGenerator(NameGenerator.PATHWAY);
         random = new Random(nodes);
     }
 
@@ -56,6 +55,7 @@ public class PathwayNode extends OntologyNode implements NodeGenerator{
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
+        pathwayNameGenerator.unload();
     }
 
     private String getID() {
@@ -70,7 +70,7 @@ public class PathwayNode extends OntologyNode implements NodeGenerator{
 
     private String getNameAxiom(String id){
         String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/pathway/%s> <http://gcm.wdcm.org/" +
-                "ontology/gcmAnnotation/v1/name> \"%s\" .", id, nameGenerator.next());
+                "ontology/gcmAnnotation/v1/name> \"%s\" .", id, pathwayNameGenerator.next());
         return axiom;
     }
 

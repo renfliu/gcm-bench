@@ -5,7 +5,7 @@ import me.renf.gcm.generator.exceptions.WriterException;
 import me.renf.gcm.generator.output.DataWriter;
 import me.renf.gcm.generator.output.DataWriterFactory;
 import me.renf.gcm.generator.random.IDGenerator;
-import me.renf.gcm.generator.random.NameGenerator;
+import me.renf.gcm.generator.random.StringGenerator;
 import me.renf.gcm.generator.random.RandomGenerator;
 import me.renf.gcm.generator.random.TaxonIDGenerator;
 import org.slf4j.Logger;
@@ -22,7 +22,7 @@ public class GenomeNode implements RandomGenerator {
     private Logger logger = LoggerFactory.getLogger(GenomeNode.class);
     private GenConfig config;
     private RandomGenerator geneIDGenerator;
-    private NameGenerator nameGenerator = new NameGenerator();
+    private StringGenerator stringGenerator = new StringGenerator();
     private RandomGenerator taxonIDGenerator = new TaxonIDGenerator();
     private Random rand = new Random();
     private long[] ids;
@@ -72,6 +72,7 @@ public class GenomeNode implements RandomGenerator {
         }
     }
 
+    /*
     public String getID() {
         int r = rand.nextInt(ids.length);
         if (r < 8) {
@@ -84,6 +85,20 @@ public class GenomeNode implements RandomGenerator {
             }
         } else if (r == 14) {
             return String.format("%s_%08d", prefixs[r], ids[r]++);
+        } else {
+            char[] plan = new char[4];
+            for (int i = 0; i < plan.length; i++) {
+                plan[i] = alpha[rand.nextInt(26)];
+            }
+            return String.format("NZ_%s%08d", String.valueOf(plan), ids[r]++);
+        }
+    }
+    */
+
+    public String getID() {
+        int r = rand.nextInt(ids.length);
+        if (r < 14) {
+            return String.format("%s_%06d", prefixs[r], ids[r]++);
         } else {
             char[] plan = new char[4];
             for (int i = 0; i < plan.length; i++) {
@@ -134,7 +149,7 @@ public class GenomeNode implements RandomGenerator {
 
     private String getDefinitionAxiom(String id) {
         String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/genome/%s> <http://gcm.wdcm.org/ontology/" +
-                "gcmAnnotation/v1/definition> \"%s\" .", id, nameGenerator.next(100));
+                "gcmAnnotation/v1/definition> \"%s\" .", id, stringGenerator.next(100));
         return axiom + "\n";
     }
 
@@ -164,13 +179,13 @@ public class GenomeNode implements RandomGenerator {
 
     private String getSubmitAddressAxiom(String id) {
         String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/genome/%s> <http://gcm.wdcm.org/ontology/" +
-                "gcmAnnotation/v1/submitAddress> \"%s\" .", id, nameGenerator.next());
+                "gcmAnnotation/v1/submitAddress> \"%s\" .", id, stringGenerator.next());
         return axiom + "\n";
     }
 
     private String getSubmitterAxiom(String id) {
         String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/genome/%s> <http://gcm.wdcm.org/ontology/" +
-                "gcmAnnotation/v1/submitter> \"%s\" .", id, nameGenerator.next());
+                "gcmAnnotation/v1/submitter> \"%s\" .", id, stringGenerator.next());
         return axiom + "\n";
     }
 
