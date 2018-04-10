@@ -1,65 +1,55 @@
 package me.renf.gcm.generator.random;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.nio.Buffer;
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
-import java.nio.charset.Charset;
+import java.io.*;
+import java.util.ArrayList;
 import java.util.Random;
 
-public class NameGenerator implements RandomGenerator{
-    private static final String nameFilePath = "res/name.txt";
+public class EnzymeNameGenerator {
+    public static final String ENZYME = "enzymeName.txt";
+    public static final String PATHWAY = "res/pathwayName.txt";
+    public static final String TAX = "res/taxName.txt";
+    private final String[] alphabet = { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",
+            "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
+    private String nameFile;
+    private ArrayList<String> nameList;
     private Random rand;
-    private static final Logger logger = LoggerFactory.getLogger(NameGenerator.class);
-    private static char[] nameArray;
-    private int curIndex;
 
-    static {
-        File file = new File(nameFilePath);
-        Long fileLength = file.length();
-        byte[] contents = new byte[fileLength.intValue()];
-        try {
-            FileInputStream in = new FileInputStream(file);
-            in.read(contents);
-            in.close();
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
-
-        Charset utf8 = Charset.forName("UTF-8");
-        ByteBuffer bb = ByteBuffer.allocate(contents.length);
-        bb.put(contents);
-        ((Buffer)bb).flip();
-        CharBuffer cb = utf8.decode(bb);
-        nameArray = cb.array();
+    public EnzymeNameGenerator(String file) {
+        this.nameFile = file;
+        rand = new Random(System.currentTimeMillis());
+        nameList = new ArrayList<>();
+        loadData();
     }
 
-    public NameGenerator() {
-        rand = new Random();
-        curIndex = 0;
+    private void loadData() {
+        File file = new File(nameFile);
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+            String line = reader.readLine();
+            while (line != null) {
+                nameList.add(line);
+                line = reader.readLine();
+            }
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public String next() {
-        return next(10);
+        return nameList.get(rand.nextInt(nameList.size()));
     }
 
-    public String next(int bound) {
-        int nameLength = rand.nextInt(bound) + 5;
-        char[] names = new char[nameLength];
-        for (int i = 0; i < nameLength; i++) {
-            if (curIndex < nameArray.length-2) {
-                names[i] = nameArray[curIndex++];
-            }else {
-                names[i] = ' ';
-                curIndex = 0;
-            }
+    public String nextRandom() {
+        int len = rand.nextInt(8)+4;
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < len; i++) {
+            sb.append(alphabet[rand.nextInt(alphabet.length)]);
         }
-        return String.valueOf(names);
+        return next() + " " + sb.toString();
+    }
+
+    public void unload(){
+        nameList.clear();
     }
 }
