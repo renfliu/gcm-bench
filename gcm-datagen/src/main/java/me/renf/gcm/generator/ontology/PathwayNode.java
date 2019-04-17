@@ -29,7 +29,7 @@ public class PathwayNode extends OntologyNode implements NodeGenerator{
         id = 0;
         nodes = lines / AVG_NODE_LINE;
         stringGenerator = new StringGenerator();
-        mapGenerator = new PathwayIDGenerator(nodes);
+        mapGenerator = new PathwayIDGenerator(nodes, config.isSimpleID());
         keggGeneGenerator = new IDGenerator(9, 10000000);
         pathwayNameGenerator = new NameGenerator(NameGenerator.PATHWAY);
         random = new Random(nodes);
@@ -62,35 +62,38 @@ public class PathwayNode extends OntologyNode implements NodeGenerator{
         if (idGenerator != null) {
             return idGenerator.next();
         }else{
-            idGenerator = new PathwayIDGenerator(nodes);
+            idGenerator = new PathwayIDGenerator(nodes, config.isSimpleID());
             return idGenerator.next();
         }
     }
 
 
     private String getNameAxiom(String id){
-        String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/pathway/%s> <http://gcm.wdcm.org/" +
-                "ontology/gcmAnnotation/v1/name> \"%s\" .", id, pathwayNameGenerator.next());
+        String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/pathway/%s>%s<http://gcm.wdcm.org/" +
+                "ontology/gcmAnnotation/v1/name>%s\"%s\" .", id, config.getSeparator(), config.getSeparator(),
+                pathwayNameGenerator.next());
         return axiom;
     }
 
     private String getTypeAxiom(String id) {
-        String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/pathway/%s> <http://www.w3.org/1999/02" +
-                "/22-rdf-syntax-ns#type> <http://gcm.wdcm.org/ontology/gcmAnnotation/v1/PathwayNode> .", id);
+        String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/pathway/%s>%s<http://www.w3.org/1999/02" +
+                "/22-rdf-syntax-ns#type>%s<http://gcm.wdcm.org/ontology/gcmAnnotation/v1/PathwayNode> .",
+                id, config.getSeparator(), config.getSeparator());
         return axiom;
     }
 
     private String getPathwaymapAxiom(String id) {
-        String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/pathway/%s> <http://gcm.wdcm.org/" +
-                "ontology/gcmAnnotation/v1/pathwaymap> <http://gcm.wdcm.org/data/gcmAnnotation1/pathwaymap/%s> .", id,
-                mapGenerator.next());
+        String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/pathway/%s>%s<http://gcm.wdcm.org/" +
+                "ontology/gcmAnnotation/v1/pathwaymap>%s<http://gcm.wdcm.org/data/gcmAnnotation1/pathwaymap/%s> .",
+                id, config.getSeparator(), config.getSeparator(), mapGenerator.next());
         return axiom;
     }
 
     private String getOrganismAxiom(String id) {
         // ratio
-        String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/pathway/%s> <http://gcm.wdcm.org/" +
-                "ontology/gcmAnnotation/v1/organism> \"%s\" .", id, id.substring(0, id.length()-5));
+        String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/pathway/%s>%s<http://gcm.wdcm.org/" +
+                "ontology/gcmAnnotation/v1/organism>%s\"%s\" .", id, config.getSeparator(), config.getSeparator(),
+                id.substring(0, id.length()-5));
         return axiom;
     }
 
@@ -103,13 +106,15 @@ public class PathwayNode extends OntologyNode implements NodeGenerator{
 
         // 生成
         for (int i = 1; i < n; i++) {
-            String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/pathway/%s> <http://gcm.wdcm.org/" +
-                    "ontology/gcmAnnotation/v1/keggGene> \"%s\" .", id, keggGeneGenerator.next());
+            String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/pathway/%s>%s<http://gcm.wdcm.org/" +
+                    "ontology/gcmAnnotation/v1/keggGene>%s\"%s\" .", id, config.getSeparator(), config.getSeparator(),
+                    keggGeneGenerator.next());
             sb.append(axiom);
             sb.append("\n");
         }
-        sb.append(String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/pathway/%s> <http://gcm.wdcm.org/ontology/" +
-                "gcmAnnotation/v1/keggGene> \"%s\" .", id, keggGeneGenerator.next()));
+        sb.append(String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/pathway/%s>%s<http://gcm.wdcm.org/ontology/" +
+                "gcmAnnotation/v1/keggGene>%s\"%s\" .", id, config.getSeparator(), config.getSeparator(),
+                keggGeneGenerator.next()));
 
         return sb.toString();
     }

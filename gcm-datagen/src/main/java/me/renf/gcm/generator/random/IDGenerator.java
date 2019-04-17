@@ -7,10 +7,10 @@ public class IDGenerator implements RandomGenerator{
     private int range;
     private Random rand;
 
-    public IDGenerator(int length, int nodes) {
+    public IDGenerator(int length, long nodes) {
         this.length = length;
         rand = new Random(3214);
-        range = nodes + (int)Math.sqrt(nodes);
+        range = (int)nodes + (int)Math.sqrt(nodes);
     }
 
     public String next() {

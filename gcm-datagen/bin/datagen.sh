@@ -11,7 +11,7 @@ if [ -z "$JAVA" -a -n "$JDK_HOME" ]; then
 fi
 
 if [ -n "$JAVA" ]; then
-  $JAVA -Xms256m -Xmx1g -jar gcm-datagen-0.1.jar $*
+  $JAVA -Xms256m -Xmx1g -jar gcm-datagen-0.2.jar $*
 else
   echo "Can't find java path"
 fi

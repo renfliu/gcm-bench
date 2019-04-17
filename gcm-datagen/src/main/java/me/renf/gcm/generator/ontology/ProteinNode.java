@@ -19,8 +19,8 @@ public class ProteinNode implements NodeGenerator{
     private GenConfig config;
     private long nodes;
     private Random rand;
-    private PdbNode pdb = new PdbNode();
-    private PfamNode pfam = new PfamNode();
+    private PdbNode pdb;
+    private PfamNode pfam;
     private ProteinIDGenerator idGenerator;
     private TaxonIDGenerator taxonIDGenerator = new TaxonIDGenerator();
     private StringGenerator stringGenerator = new StringGenerator();
@@ -30,9 +30,11 @@ public class ProteinNode implements NodeGenerator{
     public ProteinNode(GenConfig config) {
         this.config = config;
         nodes = config.getProteinLines() / AVG_PROTEIN_LINE;
-        idGenerator = new ProteinIDGenerator(nodes);
+        idGenerator = new ProteinIDGenerator(nodes, config.isSimpleID());
         go_id = 0;
         rand = new Random(nodes);
+        pdb = new PdbNode(config);
+        pfam = new PfamNode(config);
     }
 
     public long getNodes() {
@@ -84,8 +86,9 @@ public class ProteinNode implements NodeGenerator{
         else n = 9;
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < n; i++) {
-            sb.append(String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/protein/%s> <http://gcm.wdcm.org/ontology/" +
-                    "gcmAnnotation/v1/x-go> <http://purl.obolibrary.org/obo/%s> .", id, getOboID()));
+            sb.append(String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/protein/%s>%s<http://gcm.wdcm.org/ontology/" +
+                    "gcmAnnotation/v1/x-go>%s<http://purl.obolibrary.org/obo/%s> .", id, config.getSeparator(),
+                    config.getSeparator(), getOboID()));
             sb.append("\n");
         }
         return sb.toString();
@@ -105,8 +108,9 @@ public class ProteinNode implements NodeGenerator{
         else n = 9;
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < n; i++) {
-            writer.write(String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/protein/%s> <http://gcm.wdcm.org/ontology/" +
-                    "gcmAnnotation/v1/x-go> <http://purl.obolibrary.org/obo/%s> .\n", id, getOboID()));
+            writer.write(String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/protein/%s>%s<http://gcm.wdcm.org/ontology/" +
+                    "gcmAnnotation/v1/x-go>%s<http://purl.obolibrary.org/obo/%s> .\n", id, config.getSeparator(),
+                    config.getSeparator(), getOboID()));
         }
     }
 
@@ -120,8 +124,9 @@ public class ProteinNode implements NodeGenerator{
         }
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < n; i++) {
-            sb.append(String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/protein/%s> <http://gcm.wdcm.org/ontology/" +
-                    "gcmAnnotation/v1/x-pdb> <http://gcm.wdcm.org/data/gcmAnnotation1/pdb/%s> .", id, pdb.getID()));
+            sb.append(String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/protein/%s>%s<http://gcm.wdcm.org/ontology/" +
+                    "gcmAnnotation/v1/x-pdb>%s<http://gcm.wdcm.org/data/gcmAnnotation1/pdb/%s> .",
+                    id, config.getSeparator(), config.getSeparator(), pdb.getID()));
             sb.append("\n");
         }
         return sb.toString();
@@ -137,8 +142,9 @@ public class ProteinNode implements NodeGenerator{
         }
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < n; i++) {
-            writer.write(String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/protein/%s> <http://gcm.wdcm.org/ontology/" +
-                    "gcmAnnotation/v1/x-pdb> <http://gcm.wdcm.org/data/gcmAnnotation1/pdb/%s> .\n", id, pdb.getID()));
+            writer.write(String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/protein/%s>%s<http://gcm.wdcm.org/ontology/" +
+                    "gcmAnnotation/v1/x-pdb>%s<http://gcm.wdcm.org/data/gcmAnnotation1/pdb/%s> .\n",
+                    id, config.getSeparator(), config.getSeparator(), pdb.getID()));
         }
     }
 
@@ -149,8 +155,9 @@ public class ProteinNode implements NodeGenerator{
         else n = rand.nextInt(10)+5;
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < n; i++) {
-            sb.append(String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/protein/%s> <http://gcm.wdcm.org/ontology/" +
-                    "gcmAnnotation/v1/x-pfam> <http://gcm.wdcm.org/data/gcmAnnotation1/pfam/%s> .", id, pfam.getID()));
+            sb.append(String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/protein/%s>%s<http://gcm.wdcm.org/ontology/" +
+                    "gcmAnnotation/v1/x-pfam>%s<http://gcm.wdcm.org/data/gcmAnnotation1/pfam/%s> .",
+                    id, config.getSeparator(), config.getSeparator(), pfam.getID()));
             sb.append("\n");
         }
         return sb.toString();
@@ -163,20 +170,22 @@ public class ProteinNode implements NodeGenerator{
         else n = rand.nextInt(10)+5;
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < n; i++) {
-            writer.write(String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/protein/%s> <http://gcm.wdcm.org/ontology/" +
-                    "gcmAnnotation/v1/x-pfam> <http://gcm.wdcm.org/data/gcmAnnotation1/pfam/%s> .\n", id, pfam.getID()));
+            writer.write(String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/protein/%s>%s<http://gcm.wdcm.org/ontology/" +
+                    "gcmAnnotation/v1/x-pfam>%s<http://gcm.wdcm.org/data/gcmAnnotation1/pfam/%s> .\n",
+                    id, config.getSeparator(), config.getSeparator(), pfam.getID()));
         }
     }
 
     private String getTaxonAxiom(String id) {
-        String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/protein/%s> <http://gcm.wdcm.org/ontology/" +
-                "gcmAnnotation/v1/x-taxon> <http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/%s> .", id, taxonIDGenerator.next());
+        String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/protein/%s>%s<http://gcm.wdcm.org/ontology/" +
+                "gcmAnnotation/v1/x-taxon>%s<http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/%s> .",
+                id, config.getSeparator(), config.getSeparator(), taxonIDGenerator.next());
         return axiom + "\n";
     }
 
     private String getAccessionAxiom(String id) {
-            String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/protein/%s> <http://gcm.wdcm.org/ontology/" +
-                    "gcmAnnotation/v1/accession> \"%s\" .", id, getAccession(id));
+            String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/protein/%s>%s<http://gcm.wdcm.org/ontology/" +
+                    "gcmAnnotation/v1/accession>%s\"%s\" .", id, config.getSeparator(), config.getSeparator(), getAccession(id));
         return axiom + "\n";
     }
 
@@ -185,32 +194,36 @@ public class ProteinNode implements NodeGenerator{
     }
 
     private String getSequenceLengthAxiom(String id) {
-        String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/protein/%s> <http://gcm.wdcm.org/ontology/" +
-                "gcmAnnotation/v1/sequenceLength> %s .", id, getSequenceLength());
+        String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/protein/%s>%s<http://gcm.wdcm.org/ontology/" +
+                "gcmAnnotation/v1/sequenceLength>%s%s .", id, config.getSeparator(), config.getSeparator(), getSequenceLength());
         return axiom + "\n";
     }
 
     private String getTypeAxiom(String id) {
-        String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/protein/%s> <http://www.w3.org/1999/02/" +
-                "22-rdf-syntax-ns#type> <http://gcm.wdcm.org/ontology/gcmAnnotation/v1/ProteinNode> .", id);
+        String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/protein/%s>%s<http://www.w3.org/1999/02/" +
+                "22-rdf-syntax-ns#type>%s<http://gcm.wdcm.org/ontology/gcmAnnotation/v1/ProteinNode> .",
+                id, config.getSeparator(), config.getSeparator());
         return axiom + "\n";
     }
 
     private String getDescriptionAxiom(String id) {
-        String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/protein/%s> <http://gcm.wdcm.org/ontology/" +
-                "gcmAnnotation/v1/description> \"%s\" .", id, stringGenerator.next(100));
+        String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/protein/%s>%s<http://gcm.wdcm.org/ontology/" +
+                "gcmAnnotation/v1/description>%s\"%s\" .", id, config.getSeparator(), config.getSeparator(),
+                stringGenerator.next(100));
         return axiom + "\n";
     }
 
     private String getFunctionAxiom(String id) {
-        String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/protein/%s> <http://gcm.wdcm.org/ontology/" +
-                "gcmAnnotation/v1/function> \"%s\" .", id, stringGenerator.next(100));
+        String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/protein/%s>%s<http://gcm.wdcm.org/ontology/" +
+                "gcmAnnotation/v1/function>%s\"%s\" .", id, config.getSeparator(), config.getSeparator(),
+                stringGenerator.next(100));
         return axiom + "\n";
     }
 
     private String getMolecularWeightAxiom(String id) {
-        String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/protein/%s> <http://gcm.wdcm.org/ontology/" +
-                "gcmAnnotation/v1/molecularWeight> \"%s\" .", id, getMolecularWeight());
+        String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/protein/%s>%s<http://gcm.wdcm.org/ontology/" +
+                "gcmAnnotation/v1/molecularWeight>%s\"%s\" .", id, config.getSeparator(), config.getSeparator(),
+                getMolecularWeight());
         return axiom + "\n";
     }
 

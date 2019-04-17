@@ -48,10 +48,10 @@ public class EnzymeIDGenertor implements RandomGenerator {
      * @return id
      */
     public String random() {
-        int max4 = max[3]+2;
-        int max3 = max[2]+2;
-        int max2 = max[1]+2;
-        int max1 = max[0]+2;
+        int max4 = max[3]+1;
+        int max3 = max[2]+1;
+        int max2 = max[1]+1;
+        int max1 = max[0]+1;
         Random rand = new Random();
         return String.format("%d.%d.%d.%d", rand.nextInt(max1), rand.nextInt(max2), rand.nextInt(max3), rand.nextInt(max4));
     }

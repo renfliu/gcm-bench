@@ -7,6 +7,7 @@ public class ProteinIDGenerator implements RandomGenerator{
     private final char[] alphanum = "ABCDEFGHIGKLMNOPQRSTUVWXYZ1234567890".toCharArray();
     private char[] candidate;
     private long nodes;
+    private boolean isSimple = false;
     private int[] maxs = new int[11];           //由低位到高位记录id的每一位
     private int[] currentIndex = new int[11];   //由低位到高位记录id的每一位
     private int[] candidateIndex = new int[11];
@@ -14,7 +15,12 @@ public class ProteinIDGenerator implements RandomGenerator{
     private Random rand = new Random();
 
     public ProteinIDGenerator(long nodes) {
+        this(nodes, false);
+    }
+
+    public ProteinIDGenerator(long nodes, boolean isSimple) {
         this.nodes = nodes;
+        this.isSimple = isSimple;
         candidate = shuffle(alphanum);
         balanceNodeSize();                  // 生成maxs
         calcCandidateIndex();               // 根据maxs生成id字符在candidate中的位置

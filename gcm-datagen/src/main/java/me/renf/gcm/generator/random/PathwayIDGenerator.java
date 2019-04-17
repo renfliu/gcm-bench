@@ -8,12 +8,18 @@ public class PathwayIDGenerator implements RandomGenerator{
     private long[] ids;
     private int prefixIndex = 0;
     private int prefixSize;
+    private boolean isSimple = false;
     private final char[] alphabet = "abcdefghigklmnopqrstuvwxyz".toCharArray();
 
 
-    public PathwayIDGenerator(long nodes) {
+    public PathwayIDGenerator(long nodes, boolean isSimple) {
         this.nodes = nodes;
+        this.isSimple = isSimple;
         balanceNodeSize();
+    }
+
+    public PathwayIDGenerator(long nodes) {
+        this(nodes, false);
     }
 
     /**
@@ -22,8 +28,12 @@ public class PathwayIDGenerator implements RandomGenerator{
     private void balanceNodeSize() {
         // 计算需要的不同前缀数
         int num = 4;
-        if ((nodes-1000) > 64){
-            num = (int)Math.pow(nodes, 0.33);
+        if (isSimple) {
+            num = num + (int)(nodes / 100000);
+        } else {
+            if ((nodes - 1000) > 64) {
+                num = (int) Math.pow(nodes, 0.33);
+            }
         }
         // 生成随机前缀
         generatePrefixs(num);

@@ -15,6 +15,10 @@ public class GenConfig {
     private long proteinLines;
     private float geneRatio = 0.784f;
     private long geneLines;
+    private boolean owl = true;
+    // 是否生成简单的ID，简单ID只会顺序增长，方便数据之间进行连接
+    private boolean simpleID = true;
+    private String separator = " ";
 
     public GenConfig() {}
 
@@ -61,6 +65,18 @@ public class GenConfig {
         return geneLines;
     }
 
+    public boolean isSimpleID() {
+        return simpleID;
+    }
+
+    public String getSeparator() {
+        return separator;
+    }
+
+    public boolean isOwl() {
+        return owl;
+    }
+
     public void setOutFile(String outFile) {
         this.outFile = outFile;
     }
@@ -94,6 +110,14 @@ public class GenConfig {
         geneLines = (long)(totalLines*geneRatio);
     }
 
+    public void setSimpleID(boolean simpleID) {
+        this.simpleID = simpleID;
+    }
+
+    public void setSeparator(String separator) {
+        this.separator = separator;
+    }
+
     public void set(String[] args) throws ArgumentException{
         for (int i = 0; i < args.length; i+=2) {
             if (args[i].equals("-o") || args[i].equals("--output")) {
@@ -106,22 +130,24 @@ public class GenConfig {
                     throw new ArgumentException(args[i] + " argument error！");
                 }
             }
-            else if (args[i].equals("--enzyme")) {
-                setEnzymeRatio(parseRatio(args[i+1], args[i]));
-            }
-            else if (args[i].equals("--pathway")) {
-                setPathwayRatio(parseRatio(args[i+1], args[i]));
-            }
-            else if (args[i].equals("--taxonomy")) {
-                setTaxonRatio(parseRatio(args[i+1], args[i]));
-            }
-            else if (args[i].equals("--protein")) {
-                setProteinRatio(parseRatio(args[i+1], args[i]));
-            }
-            else if (args[i].equals("--gene")) {
-                setGeneRatio(parseRatio(args[i+1], args[i]));
-            }
-            else {
+            else if (args[i].endsWith("--owl")) {
+                owl = Boolean.parseBoolean(args[i+1]);
+            } else if (args[i].equalsIgnoreCase("--simple")) {
+                setSimpleID(Boolean.parseBoolean(args[i+1]));
+            } else if (args[i].equalsIgnoreCase("--separator")) {
+                if (args[i+1].equalsIgnoreCase("tab")) separator = "\t";
+                else separator = " ";
+            } else if (args[i].equals("--enzyme")) {
+                setEnzymeRatio(parseRatio(args[i + 1], args[i]));
+            } else if (args[i].equals("--pathway")) {
+                setPathwayRatio(parseRatio(args[i + 1], args[i]));
+            } else if (args[i].equals("--taxonomy")) {
+                setTaxonRatio(parseRatio(args[i + 1], args[i]));
+            } else if (args[i].equals("--protein")) {
+                setProteinRatio(parseRatio(args[i + 1], args[i]));
+            } else if (args[i].equals("--gene")) {
+                setGeneRatio(parseRatio(args[i + 1], args[i]));
+            } else {
                 throw new ArgumentException("the argument can't be recognized : " + args[i]);
             }
         }

@@ -1,5 +1,6 @@
 package me.renf.gcm.generator.ontology;
 
+import me.renf.gcm.generator.GenConfig;
 import me.renf.gcm.generator.random.NameGenerator;
 import me.renf.gcm.generator.random.StringGenerator;
 import me.renf.gcm.generator.random.RandomGenerator;
@@ -16,12 +17,14 @@ public class TaxonName implements RandomGenerator{
     private RandomGenerator stringGenerator;
     private RandomGenerator idGenerator;
     private NameGenerator nameGenerator;
+    private GenConfig config;
     private Random rand;
 
-    public TaxonName() {
+    public TaxonName(GenConfig config) {
         stringGenerator = new StringGenerator();
         idGenerator = new TaxonIDGenerator();
         nameGenerator = new NameGenerator(NameGenerator.TAX);
+        this.config = config;
         rand = new Random();
     }
 
@@ -44,26 +47,30 @@ public class TaxonName implements RandomGenerator{
     }
 
     private String getTaxIDAxiom(String id) {
-        String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/name/%s> <http://gcm.wdcm.org/" +
-                "ontology/gcmAnnotation/v1/taxid> <http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/%s> .", id, getIDNumber(id));
+        String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/name/%s>%s<http://gcm.wdcm.org/" +
+                "ontology/gcmAnnotation/v1/taxid>%s<http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/%s> .",
+                id, config.getSeparator(), config.getSeparator(), getIDNumber(id));
         return axiom+"\n";
     }
 
     private String getNameClassAxiom(String id) {
-        String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/name/%s> <http://gcm.wdcm.org/" +
-                "ontology/gcmAnnotation/v1/nameclass> \"%s\" .", id, getNameClass(id));
+        String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/name/%s>%s<http://gcm.wdcm.org/" +
+                "ontology/gcmAnnotation/v1/nameclass>%s\"%s\" .", id, config.getSeparator(), config.getSeparator(),
+                getNameClass(id));
         return axiom+"\n";
     }
 
     private String getTaxnameAxiom(String id) {
-        String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/name/%s> <http://gcm.wdcm.org/" +
-                "ontology/gcmAnnotation/v1/taxname> \"%s\" .", id, nameGenerator.next());
+        String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/name/%s>%s<http://gcm.wdcm.org/" +
+                "ontology/gcmAnnotation/v1/taxname>%s\"%s\" .", id, config.getSeparator(), config.getSeparator(),
+                nameGenerator.next());
         return axiom+"\n";
     }
 
     private String getTypeAxiom(String id) {
-        String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/name/%s> <http://www.w3.org/" +
-                "1999/02/22-rdf-syntax-ns#type> <http://gcm.wdcm.org/ontology/gcmAnnotation/v1/TaxonName> .", id);
+        String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/name/%s>%s<http://www.w3.org/" +
+                "1999/02/22-rdf-syntax-ns#type>%s<http://gcm.wdcm.org/ontology/gcmAnnotation/v1/TaxonName> .",
+                id, config.getSeparator(), config.getSeparator());
         return axiom+"\n";
     }
 

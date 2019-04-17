@@ -68,6 +68,9 @@ public class Generator {
         System.out.println("      -h, --help");
         System.out.println("            show help. ");
         System.out.println("");
+        System.out.println("      --owl");
+        System.out.println("            whether to write owl data, default is true. ");
+        System.out.println("");
         System.out.println("      --enzyme=RATIO");
         System.out.println("            you can specify the ratio of enzyme in whole data, or 0.0324 as   ");
         System.out.println("            default.");
@@ -87,6 +90,12 @@ public class Generator {
         System.out.println("      --genome=RATIO");
         System.out.println("            the genome's ratio is specified as RATIO, or 0.0595 as default.");
         System.out.println("");
+        System.out.println("      --simple=true/false");
+        System.out.println("            generate simple ID or realistic ID.");
+        System.out.println("");
+        System.out.println("      --separator=tab/space");
+        System.out.println("            change the separator in triple");
+        System.out.println("");
     }
 
     public void setArgs(String[] args) throws ArgumentException {
@@ -98,13 +107,15 @@ public class Generator {
             DataWriter writer = DataWriterFactory.getWriter(config);
 
             // 写入owl数据
-            FileReader reader = new FileReader(new File("res/gcm.n3"));
-            char[] buffer = new char[2048];
-            int len = -1;
-            while ((len = reader.read(buffer)) != -1) {
-                writer.write(buffer, 0, len);
+            if (config.isOwl()) {
+                FileReader reader = new FileReader(new File("res/gcm.n3"));
+                char[] buffer = new char[2048];
+                int len = -1;
+                while ((len = reader.read(buffer)) != -1) {
+                    writer.write(buffer, 0, len);
+                }
+                reader.close();
             }
-            reader.close();
 
             // 写入pathway数据
             PathwayNode pathwayNode = new PathwayNode(config);

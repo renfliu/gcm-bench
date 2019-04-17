@@ -25,7 +25,7 @@ public class TaxonNode implements NodeGenerator {
     public TaxonNode(GenConfig config){
         this.config = config;
         nodes = config.getTaxonLines() / AVG_TAXON_LINE;
-        taxonName = new TaxonName();
+        taxonName = new TaxonName(config);
         idGenerator = new TaxonIDGenerator((int)nodes);
         rand = new Random(nodes);
     }
@@ -62,25 +62,27 @@ public class TaxonNode implements NodeGenerator {
         int curID = Integer.valueOf(id);
         StringBuilder sb = new StringBuilder();
         int parentID = rand.nextInt(curID/2+1)+1;
-        sb.append(String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/%s> <http://gcm.wdcm.org/ontology/" +
-                "gcmAnnotation/v1/parentTaxid> <http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/%s> .", id, parentID));
+        sb.append(String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/%s>%s<http://gcm.wdcm.org/ontology/" +
+                "gcmAnnotation/v1/parentTaxid>%s<http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/%s> .",
+                id, config.getSeparator(), config.getSeparator(), parentID));
         sb.append("\n");
         int ancestorID = rand.nextInt(parentID/2+1)+1;
-        sb.append(String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/%s> <http://gcm.wdcm.org/ontology/" +
-                "gcmAnnotation/v1/ancestorTaxid> <http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/%s> .", id, ancestorID));
+        sb.append(String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/%s>%s<http://gcm.wdcm.org/ontology/" +
+                "gcmAnnotation/v1/ancestorTaxid>%s<http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/%s> .",
+                id, config.getSeparator(), config.getSeparator(), ancestorID));
         sb.append("\n");
         return sb.toString();
     }
 
     private String getDivisionIDAxiom(String id) {
-        String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/%s> <http://gcm.wdcm.org/ontology/" +
-                "gcmAnnotation/v1/divisionId> \"%s\" .", id, getDivisionId());
+        String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/%s>%s<http://gcm.wdcm.org/ontology/" +
+                "gcmAnnotation/v1/divisionId>%s\"%s\" .", id, config.getSeparator(), config.getSeparator(), getDivisionId());
         return axiom + "\n";
     }
 
     private String getEmblCodeAxiom(String id) {
-        String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/%s> <http://gcm.wdcm.org/ontology/" +
-                "gcmAnnotation/v1/emblCode> \"%s\" .", id, getEmblCode());
+        String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/%s>%s<http://gcm.wdcm.org/ontology/" +
+                "gcmAnnotation/v1/emblCode>%s\"%s\" .", id, config.getSeparator(), config.getSeparator(), getEmblCode());
         return axiom + "\n";
     }
 
@@ -90,14 +92,15 @@ public class TaxonNode implements NodeGenerator {
     }
 
     private String getNodeRankAxiom(String id) {
-        String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/%s> <http://gcm.wdcm.org/ontology/" +
-                "gcmAnnotation/v1/nodeRank> \"%s\" .", id, getNodeRank());
+        String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/%s>%s<http://gcm.wdcm.org/ontology/" +
+                "gcmAnnotation/v1/nodeRank>%s\"%s\" .", id, config.getSeparator(), config.getSeparator(), getNodeRank());
         return axiom + "\n";
     }
 
     private String getTypeAxiom(String id) {
-        String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/%s> <http://www.w3.org/1999/02/" +
-                "22-rdf-syntax-ns#type> <http://gcm.wdcm.org/ontology/gcmAnnotation/v1/TaxonNode> .", id);
+        String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/%s>%s<http://www.w3.org/1999/02/" +
+                "22-rdf-syntax-ns#type>%s<http://gcm.wdcm.org/ontology/gcmAnnotation/v1/TaxonNode> .",
+                id, config.getSeparator(), config.getSeparator());
         return axiom + "\n";
     }
 

@@ -25,13 +25,18 @@ public class GenomeNode implements RandomGenerator {
     private StringGenerator stringGenerator = new StringGenerator();
     private RandomGenerator taxonIDGenerator = new TaxonIDGenerator();
     private Random rand = new Random();
+    private int nodes;
+    private int maxID;
     private long[] ids;
 
     public GenomeNode(GenConfig config){
         this.config = config;
         ids = new long[prefixs.length+GENOME_PLANS];
         Arrays.fill(ids, 1);
-        geneIDGenerator = new IDGenerator(8, 99999999);
+        long geneNodes = (long)(config.getGeneLines() / GeneNode.AVG_GENE_LINE);
+        geneIDGenerator = new IDGenerator(8, geneNodes);
+        nodes = (int)(geneNodes / 98);  // 98是为了扩大最大值的可选范围
+        maxID = nodes / prefixs.length + (int)Math.sqrt(nodes/prefixs.length);
     }
 
     public String next() {
@@ -72,50 +77,51 @@ public class GenomeNode implements RandomGenerator {
         }
     }
 
-    /*
+
     public String getID() {
-        int r = rand.nextInt(ids.length);
-        if (r < 8) {
+        if (config.isSimpleID()) {
+            int r = rand.nextInt(prefixs.length);
             return String.format("%s_%06d", prefixs[r], ids[r]++);
-        } else if (r < 14) {
-            if (rand.nextInt(10) < 5) {
+        } else {
+            int r = rand.nextInt(ids.length);
+            if (r < 14) {
                 return String.format("%s_%06d", prefixs[r], ids[r]++);
-            }else {
-                return String.format("%s_01%06d", prefixs[r], ids[r]++);
+            } else {
+                char[] plan = new char[4];
+                for (int i = 0; i < plan.length; i++) {
+                    plan[i] = alpha[rand.nextInt(26)];
+                }
+                return String.format("NZ_%s%08d", String.valueOf(plan), ids[r]++);
             }
-        } else if (r == 14) {
-            return String.format("%s_%08d", prefixs[r], ids[r]++);
-        } else {
-            char[] plan = new char[4];
-            for (int i = 0; i < plan.length; i++) {
-                plan[i] = alpha[rand.nextInt(26)];
-            }
-            return String.format("NZ_%s%08d", String.valueOf(plan), ids[r]++);
-        }
-    }
-    */
-
-    public String getID() {
-        int r = rand.nextInt(ids.length);
-        if (r < 14) {
-            return String.format("%s_%06d", prefixs[r], ids[r]++);
-        } else {
-            char[] plan = new char[4];
-            for (int i = 0; i < plan.length; i++) {
-                plan[i] = alpha[rand.nextInt(26)];
-            }
-            return String.format("NZ_%s%08d", String.valueOf(plan), ids[r]++);
         }
     }
 
+    public String randomID() {
+        if (config.isSimpleID()) {
+            int r = rand.nextInt(prefixs.length);
+            return String.format("%s_%06d", prefixs[r], rand.nextInt(maxID));
+        } else {
+            int r = rand.nextInt(ids.length);
+            if (r < 14) {
+                return String.format("%s_%06d", prefixs[r], rand.nextInt(maxID));
+            } else {
+                char[] plan = new char[4];
+                for (int i = 0; i < plan.length; i++) {
+                    plan[i] = alpha[rand.nextInt(26)];
+                }
+                return String.format("NZ_%s%08d", String.valueOf(plan), rand.nextInt(maxID));
+            }
+        }
+    }
 
     private String getGeneAxiom(String id) {
         int r = rand.nextInt(4000);
         int n = (int)(1701 - 10*(Math.log(r) / Math.log(1.05)));   //统计出的pathway出现概率的拟合曲线
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < n; i++) {
-            sb.append(String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/genome/%s> <http://gcm.wdcm.org/ontology/" +
-                    "gcmAnnotation/v1/x-gene> <http://gcm.wdcm.org/data/gcmAnnotation1/gene/%s> .", id, geneIDGenerator.next()));
+            sb.append(String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/genome/%s>%s<http://gcm.wdcm.org/ontology/" +
+                    "gcmAnnotation/v1/x-gene>%s<http://gcm.wdcm.org/data/gcmAnnotation1/gene/%s> .",
+                    id, config.getSeparator(), config.getSeparator(), geneIDGenerator.next()));
             sb.append("\n");
         }
         return sb.toString();
@@ -125,67 +131,70 @@ public class GenomeNode implements RandomGenerator {
         int r = rand.nextInt(4000) + 1;
         int n = (int)(1701 - 10*(Math.log(r) / Math.log(1.05)));   //统计出的pathway出现概率的拟合曲线
         for (int i = 0; i < n; i++) {
-            writer.write(String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/genome/%s> <http://gcm.wdcm.org/ontology/" +
-                    "gcmAnnotation/v1/x-gene> <http://gcm.wdcm.org/data/gcmAnnotation1/gene/%s> .\n", id, geneIDGenerator.next()));
+            writer.write(String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/genome/%s>%s<http://gcm.wdcm.org/ontology/" +
+                    "gcmAnnotation/v1/x-gene>%s<http://gcm.wdcm.org/data/gcmAnnotation1/gene/%s> .\n",
+                    id, config.getSeparator(), config.getSeparator(), geneIDGenerator.next()));
         }
     }
 
     private String getTaxonAxiom(String id) {
-        String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/genome/%s> <http://gcm.wdcm.org/ontology/" +
-                "gcmAnnotation/v1/x-taxon> <http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/%s> .", id, taxonIDGenerator.next());
+        String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/genome/%s>%s<http://gcm.wdcm.org/ontology/" +
+                "gcmAnnotation/v1/x-taxon>%s<http://gcm.wdcm.org/data/gcmAnnotation1/taxonomy/%s> .",
+                id, config.getSeparator(), config.getSeparator(), taxonIDGenerator.next());
         return axiom + "\n";
     }
 
     private String getAccessionAxiom(String id) {
         StringBuilder sb = new StringBuilder();
-        sb.append(String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/genome/%s> <http://gcm.wdcm.org/ontology/" +
-                "gcmAnnotation/v1/accession> \"%s\" .", id, getAccession(id)));
+        sb.append(String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/genome/%s>%s<http://gcm.wdcm.org/ontology/" +
+                "gcmAnnotation/v1/accession>%s\"%s\" .", id, config.getSeparator(), config.getSeparator(), getAccession(id)));
         sb.append("\n");
-        sb.append(String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/genome/%s> <http://gcm.wdcm.org/ontology/" +
-                "gcmAnnotation/v1/accession> \"%s\" .", id, getAccession(id)));
+        sb.append(String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/genome/%s>%s<http://gcm.wdcm.org/ontology/" +
+                "gcmAnnotation/v1/accession>%s\"%s\" .", id, config.getSeparator(), config.getSeparator(), getAccession(id)));
         sb.append("\n");
         return sb.toString();
     }
 
     private String getDefinitionAxiom(String id) {
-        String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/genome/%s> <http://gcm.wdcm.org/ontology/" +
-                "gcmAnnotation/v1/definition> \"%s\" .", id, stringGenerator.next(100));
+        String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/genome/%s>%s<http://gcm.wdcm.org/ontology/" +
+                "gcmAnnotation/v1/definition>%s\"%s\" .", id, config.getSeparator(), config.getSeparator(), stringGenerator.next(100));
         return axiom + "\n";
     }
 
     private String getGiNumberAxiom(String id) {
-        String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/genome/%s> <http://gcm.wdcm.org/ontology/" +
-                "gcmAnnotation/v1/giNumber> \"%s\" .", id, getGiNumber());
+        String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/genome/%s>%s<http://gcm.wdcm.org/ontology/" +
+                "gcmAnnotation/v1/giNumber>%s\"%s\" .", id, config.getSeparator(), config.getSeparator(), getGiNumber());
         return axiom + "\n";
     }
 
     private String getTypeAxiom(String id) {
-        String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/genome/%s> <http://www.w3.org/1999/02/22" +
-                "-rdf-syntax-ns#type> <http://gcm.wdcm.org/ontology/gcmAnnotation/v1/GenomeNode> .", id);
+        String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/genome/%s>%s<http://www.w3.org/1999/02/22" +
+                "-rdf-syntax-ns#type>%s<http://gcm.wdcm.org/ontology/gcmAnnotation/v1/GenomeNode> .",
+                id, config.getSeparator(), config.getSeparator());
         return axiom + "\n";
     }
 
     private String getDateSubmitAxiom(String id) {
-        String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/genome/%s> <http://gcm.wdcm.org/ontology/" +
-                "gcmAnnotation/v1/dateSubmit> \"%s\" .", id, getDateSubmit());
+        String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/genome/%s>%s<http://gcm.wdcm.org/ontology/" +
+                "gcmAnnotation/v1/dateSubmit>%s\"%s\" .", id, config.getSeparator(), config.getSeparator(), getDateSubmit());
         return axiom + "\n";
     }
 
     private String getStrainAxiom(String id) {
-        String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/genome/%s> <http://gcm.wdcm.org/ontology/" +
-                "gcmAnnotation/v1/strain> \"%s\" .", id, getStrain());
+        String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/genome/%s>%s<http://gcm.wdcm.org/ontology/" +
+                "gcmAnnotation/v1/strain>%s\"%s\" .", id, config.getSeparator(), config.getSeparator(), getStrain());
         return axiom + "\n";
     }
 
     private String getSubmitAddressAxiom(String id) {
-        String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/genome/%s> <http://gcm.wdcm.org/ontology/" +
-                "gcmAnnotation/v1/submitAddress> \"%s\" .", id, stringGenerator.next());
+        String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/genome/%s>%s<http://gcm.wdcm.org/ontology/" +
+                "gcmAnnotation/v1/submitAddress>%s\"%s\" .", id, config.getSeparator(), config.getSeparator(), stringGenerator.next());
         return axiom + "\n";
     }
 
     private String getSubmitterAxiom(String id) {
-        String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/genome/%s> <http://gcm.wdcm.org/ontology/" +
-                "gcmAnnotation/v1/submitter> \"%s\" .", id, stringGenerator.next());
+        String axiom = String.format("<http://gcm.wdcm.org/data/gcmAnnotation1/genome/%s>%s<http://gcm.wdcm.org/ontology/" +
+                "gcmAnnotation/v1/submitter>%s\"%s\" .", id, config.getSeparator(), config.getSeparator(), stringGenerator.next());
         return axiom + "\n";
     }
 
