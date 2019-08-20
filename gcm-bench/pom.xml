@@ -22,7 +22,7 @@
         <dependency>
             <groupId>me.renf.gcm</groupId>
             <artifactId>gcm-datagen</artifactId>
-            <version>0.1</version>
+            <version>0.2</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -39,7 +39,7 @@
             <groupId>org.apache.jena</groupId>
             <artifactId>apache-jena-libs</artifactId>
             <type>pom</type>
-            <version>3.4.0</version>
+            <version>3.7.0</version>
         </dependency>
         <dependency>
             <groupId>virtuoso</groupId>

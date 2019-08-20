@@ -28,13 +28,16 @@ public class JenaPlatform extends Platform{
     @Override
     public void init() {
         try {
-            JenaConf jenaConf = new JenaConf();
-            jenaConf.loadFromFile();
             //conn = RDFConnectionFactory.connect(jenaConf.getDestination());
             conn = RDFConnectionFactory.connect(dataset);
         } catch (Exception e) {
             throw new BenchmarkLoadException("connect to jena error: " + e.getMessage());
         }
+    }
+
+    @Override
+    public void buildData() {
+
     }
 
     @Override

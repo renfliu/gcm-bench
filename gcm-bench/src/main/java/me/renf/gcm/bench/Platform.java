@@ -54,8 +54,14 @@ abstract public class Platform {
      */
     abstract public void init();
 
+
     /**
      * 加载测试所需要的数据集，测试平台加载测试数据集，并对数据集进行相应的初始化工作
+     */
+    abstract public void buildData();
+
+    /**
+     * 加载已经构建的数据集，将数据加载到内存中以供查询
      */
     abstract public void loadData();
 

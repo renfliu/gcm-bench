@@ -29,14 +29,19 @@ public class GStorePlatform extends Platform{
             if (!gc.test()) {
                 throw new BenchmarkLoadException("GStore连接失败");
             }
+            gc.drop(dataset);
         } catch (IOException e) {
             throw new BenchmarkLoadException("读取配置文件出错: " + e.getMessage());
         }
     }
 
     @Override
-    public void loadData() {
+    public void buildData() {
         gc.build(dataset, conf.getDataset());
+    }
+
+    @Override
+    public void loadData() {
         gc.load(dataset);
     }
 

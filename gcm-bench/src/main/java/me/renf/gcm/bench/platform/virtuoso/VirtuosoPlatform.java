@@ -29,6 +29,11 @@ public class VirtuosoPlatform extends Platform{
     }
 
     @Override
+    public void buildData() {
+
+    }
+
+    @Override
     public void loadData() {
 
     }

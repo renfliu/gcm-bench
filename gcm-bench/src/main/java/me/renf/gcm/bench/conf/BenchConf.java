@@ -23,25 +23,47 @@ public class BenchConf {
     private float geneRatio;       // the gene ratio in generated data
 
     private String sparql;         // the SPARQL query file name
-    private String type;           // the platform to benchmark, like gstore, jena, virtuoso
+    private String platform;           // the platform to benchmark, like gstore, jena, virtuoso
+    private String type;
+    private int concurrentClients;
+    private int concurrentQueryNumber;
 
     private int monitorFreq;       // Millisecond
     private boolean monitorCpu;    // whether to monitor cpu
     private boolean monitorMem;    // whether to monitor memory
+
+    // gStore
+    private String gStorePath;
+    private String gStoreIP;
+    private String gStorePort;
+    // Jena
+    private String jenaPath;
+    private String jenaDestination;
+    // Virtuoso
+    private String virtuosoPath;
+    // RDF3X
+    private String rdf3xPath;
+
 
     public void loadFromFile() throws IOException{
         InputStream inputStream = new FileInputStream(new File(CONF_FILE));
         Properties properties = new Properties();
         properties.load(inputStream);
 
-        setGenerate(Boolean.valueOf(properties.getProperty("dataGenerate", "true")));
-        setDataset(properties.getProperty("dataset", "data.n3"));
-        setType(properties.getProperty("benchType", "gstore"));
-        setSparql(properties.getProperty("sparql", "res/query/query.sql"));
-        if (!isGenerate()) {
-            setDataset(properties.getProperty("benchData", "data.n3"));
-        }
         try {
+            // Benchmark
+            setGenerate(Boolean.valueOf(properties.getProperty("dataGenerate", "true")));
+            setDataset(properties.getProperty("dataset", "data.n3"));
+            setPlatform(properties.getProperty("benchPlatform", "gstore"));
+            setType(properties.getProperty("benchType", "serial"));
+            setConcurrentClients(Integer.valueOf(properties.getProperty("concurrentClients", "2")));
+            setConcurrentQueryNumber(Integer.valueOf(properties.getProperty("concurrentQueryNumber", "12")));
+
+            setSparql(properties.getProperty("sparql", "res/query/query.sql"));
+            if (!isGenerate()) {
+                setDataset(properties.getProperty("benchData", "data.n3"));
+            }
+
             // the ratio of the generated entity
             setLineNumber(Long.valueOf(properties.getProperty("lineNumber", "1000000")));
             setEnzymeRatio(Float.valueOf(properties.getProperty("enzymeRatio", "0.0324")));
@@ -49,16 +71,26 @@ public class BenchConf {
             setTaxonRatio(Float.valueOf(properties.getProperty("taxonRatio", "0.0719")));
             setProteinRatio(Float.valueOf(properties.getProperty("proteinRatio", "0.0623")));
             setGeneRatio(Float.valueOf(properties.getProperty("geneRatio", "0.784")));
-        } catch (NumberFormatException e) {
-            logger.error("解析配置文件出错: " + e.getMessage());
-        }
 
-        // Monitor Configuration
-        try {
+            // Monitor Configuration
             setMonitorFreq(Integer.valueOf(properties.getProperty("monitorFreq", "1000")));
             setMonitorCpu(Boolean.valueOf(properties.getProperty("monitorCpu", "true")));
             setMonitorMem(Boolean.valueOf(properties.getProperty("monitorMem", "true")));
-        } catch (NumberFormatException e){
+
+            // Platform Configuration
+            // gStore
+            setgStorePath(properties.getProperty("gstore_path", "/opt/gStore"));
+            setgStoreIP(properties.getProperty("gstore_ip", "127.0.0.1"));
+            setgStorePort(properties.getProperty("gstore_port", "3305"));
+            // Jena
+            setJenaPath(properties.getProperty("jena_path", "/opt/jena"));
+            setJenaDestination(properties.getProperty("jena_destination", "http://127.0.0.1:8000/fuseki"));
+            // Virtuoso
+            setVirtuosoPath(properties.getProperty("virtuoso_path", "/opt/virtuoso"));
+            // RDF3X
+            setRdf3xPath(properties.getProperty("rdf3x_path", "/opt/rdf3x"));
+
+        } catch (NumberFormatException e) {
             logger.error("解析配置文件出错: " + e.getMessage());
         }
 
@@ -138,12 +170,36 @@ public class BenchConf {
         this.sparql = sparql;
     }
 
+    public String getPlatform() {
+        return platform;
+    }
+
+    public void setPlatform(String platform) {
+        this.platform = platform;
+    }
+
     public String getType() {
         return type;
     }
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public int getConcurrentClients() {
+        return concurrentClients;
+    }
+
+    public void setConcurrentClients(int concurrentClients) {
+        this.concurrentClients = concurrentClients;
+    }
+
+    public int getConcurrentQueryNumber() {
+        return concurrentQueryNumber;
+    }
+
+    public void setConcurrentQueryNumber(int concurrentQueryNumber) {
+        this.concurrentQueryNumber = concurrentQueryNumber;
     }
 
     public int getMonitorFreq() {
@@ -168,5 +224,61 @@ public class BenchConf {
 
     public void setMonitorMem(boolean monitorMem) {
         this.monitorMem = monitorMem;
+    }
+
+    public String getgStorePath() {
+        return gStorePath;
+    }
+
+    public void setgStorePath(String gStorePath) {
+        this.gStorePath = gStorePath;
+    }
+
+    public String getgStoreIP() {
+        return gStoreIP;
+    }
+
+    public void setgStoreIP(String gStoreIP) {
+        this.gStoreIP = gStoreIP;
+    }
+
+    public String getgStorePort() {
+        return gStorePort;
+    }
+
+    public void setgStorePort(String gStorePort) {
+        this.gStorePort = gStorePort;
+    }
+
+    public String getJenaPath() {
+        return jenaPath;
+    }
+
+    public void setJenaPath(String jenaPath) {
+        this.jenaPath = jenaPath;
+    }
+
+    public String getJenaDestination() {
+        return jenaDestination;
+    }
+
+    public void setJenaDestination(String jenaDestination) {
+        this.jenaDestination = jenaDestination;
+    }
+
+    public String getVirtuosoPath() {
+        return virtuosoPath;
+    }
+
+    public void setVirtuosoPath(String virtuosoPath) {
+        this.virtuosoPath = virtuosoPath;
+    }
+
+    public String getRdf3xPath() {
+        return rdf3xPath;
+    }
+
+    public void setRdf3xPath(String rdf3xPath) {
+        this.rdf3xPath = rdf3xPath;
     }
 }

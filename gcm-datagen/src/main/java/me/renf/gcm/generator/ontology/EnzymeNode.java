@@ -26,7 +26,7 @@ public class EnzymeNode extends OntologyNode implements NodeGenerator{
     public EnzymeNode(GenConfig config) {
         super(config);
         nodes = config.getEnzymeLines() / AVG_NODE_LINE;
-        pathwayGenerator = new PathwayIDGenerator(nodes);
+        pathwayGenerator = new PathwayIDGenerator(nodes, true);
         classGenerator = new StringGenerator();
         geneGenerator = new KeggGeneGenerator();
         stringGenerator = new StringGenerator();

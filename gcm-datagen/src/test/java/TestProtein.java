@@ -26,17 +26,4 @@ public class TestProtein {
         protein.generate();
     }
 
-    public static void testPfam() {
-        PfamNode node = new PfamNode();
-        for (int i = 0; i < 100; i++){
-            System.out.print(node.next());
-        }
-    }
-
-    public static  void testPdb() {
-        PdbNode node = new PdbNode();
-        for (int i = 0; i < 100; i++) {
-            System.out.print(node.next());
-        }
-    }
 }

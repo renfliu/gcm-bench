@@ -8,8 +8,10 @@ public class TestTaxon {
         testTaxon();
     }
 
-    public static void testTaxonName() {
-        TaxonName taxonName = new TaxonName();
+    public static void testTaxonName() throws  Exception{
+        String[] args = {"-o", "taxon", "-n", "1000000"};
+        GenConfig config = new GenConfig(args);
+        TaxonName taxonName = new TaxonName(config);
         for (int i = 0; i< 10; i++) {
             System.out.print(taxonName.next());
         }

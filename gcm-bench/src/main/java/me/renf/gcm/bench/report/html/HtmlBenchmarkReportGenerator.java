@@ -39,7 +39,7 @@ public class HtmlBenchmarkReportGenerator implements BenchmarkReportGenerator{
 
     public BenchmarkReport generateReportFromResult(BenchmarkResult result) {
         report = new BenchmarkReport();
-        report.setTitle(benchConf.getType());
+        report.setTitle(benchConf.getPlatform());
         genReportEnv();
         genReportConf();
         genReportCondition();

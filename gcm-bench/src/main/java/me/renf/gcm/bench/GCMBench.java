@@ -4,8 +4,11 @@ import me.renf.gcm.bench.conf.BenchConf;
 import me.renf.gcm.bench.domain.BenchmarkResult;
 import me.renf.gcm.bench.exception.BenchmarkLoadException;
 import me.renf.gcm.bench.platform.gstore.GStorePlatform;
-import me.renf.gcm.bench.platform.jena.JenaPlatform;
 import me.renf.gcm.bench.monitor.Monitor;
+import me.renf.gcm.bench.platform.jena.JenaPlatform;
+import me.renf.gcm.bench.platform.jena.JenaTDBPlatform;
+import me.renf.gcm.bench.platform.rdf3x.RDF3XPlatform;
+import me.renf.gcm.bench.platform.virtuoso.VirtuosoPlatform;
 import me.renf.gcm.bench.report.BenchmarkReport;
 import me.renf.gcm.bench.report.BenchmarkReportWriter;
 import me.renf.gcm.bench.report.html.HtmlBenchmarkReportGenerator;
@@ -43,15 +46,21 @@ public class GCMBench {
 
     public static Platform loadPlatform(BenchConf conf) {
         Platform platform;
-        switch (conf.getType()) {
+        switch (conf.getPlatform()) {
             case "gstore":
                 platform = new GStorePlatform(conf);
                 break;
             case "jena":
                 platform = new JenaPlatform(conf);
                 break;
+            case "rdf3x":
+                platform = new RDF3XPlatform(conf);
+                break;
+            case "virtuoso":
+                platform = new VirtuosoPlatform(conf);
+                break;
             default:
-                throw new BenchmarkLoadException("不支持的平台类型");
+                throw new BenchmarkLoadException("Platform is not supported");
         }
         return platform;
     }
